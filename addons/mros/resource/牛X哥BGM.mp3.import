@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/牛X哥BGM.mp3-1d8f2b55b960e60488c56d5e65a94cdd.mp3str"
+
+[deps]
+
+source_file="res://addons/mros/resource/牛X哥BGM.mp3"
+dest_files=[ "res://.import/牛X哥BGM.mp3-1d8f2b55b960e60488c56d5e65a94cdd.mp3str" ]
+
+[params]
+
+loop=true
+loop_offset=0
