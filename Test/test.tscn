@@ -1,23 +1,18 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=4 format=2]
 
-[ext_resource path="res://Test/test.gd" type="Script" id=1]
-[ext_resource path="res://addons/mros/module/BehaviorTree/BTRoot.gd" type="Script" id=2]
-[ext_resource path="res://addons/mros/module/BehaviorTree/Node/Compsite/BTSequence.gd" type="Script" id=3]
-[ext_resource path="res://addons/mros/module/BehaviorTree/Node/Leaf/BTAction.gd" type="Script" id=4]
+[ext_resource path="res://Test/TetstTimeline.gd" type="Script" id=1]
+[ext_resource path="res://addons/miros/module/BehaviorTree/Node/Root/BTRoot.gd" type="Script" id=2]
+[ext_resource path="res://Test/ColorRect.gd" type="Script" id=5]
 
 [node name="Node2D" type="Node2D"]
 script = ExtResource( 1 )
 
+[node name="ColorRect" type="ColorRect" parent="."]
+margin_right = 40.0
+margin_bottom = 40.0
+script = ExtResource( 5 )
+
+[node name="test" type="Node" parent="."]
+
 [node name="Root" type="Node" parent="."]
 script = ExtResource( 2 )
-host = NodePath("CompositeSequence")
-host_functions = [ "_init", "_task" ]
-
-[node name="CompositeSequence" type="Node" parent="Root"]
-script = ExtResource( 3 )
-
-[node name="LeafAction" type="Node" parent="Root/CompositeSequence"]
-script = ExtResource( 4 )
-
-[node name="LeafAction2" type="Node" parent="Root/CompositeSequence"]
-script = ExtResource( 4 )

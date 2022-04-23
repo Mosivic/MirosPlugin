@@ -9,54 +9,72 @@
 config_version=4
 
 _global_script_classes=[ {
+"base": "Node",
+"class": "ActionManager",
+"language": "GDScript",
+"path": "res://addons/miros/module/Action/ActionManager.gd"
+}, {
 "base": "Resource",
 "class": "BTGraphResource",
 "language": "GDScript",
-"path": "res://addons/mros/module/BehaviorTree/Util/BTGraph/BTGraphResource.gd"
+"path": "res://addons/miros/module/BehaviorTree/Util/BTGraph/BTGraphResource.gd"
 }, {
 "base": "Node2D",
 "class": "GameTool",
 "language": "GDScript",
-"path": "res://addons/mros/module/Unitool/GameTool.gd"
+"path": "res://addons/miros/module/Unitool/GameTool.gd"
 }, {
 "base": "Node",
 "class": "InputAction",
 "language": "GDScript",
-"path": "res://addons/mros/module/Unitool/Input/InputAction.gd"
+"path": "res://addons/miros/module/Unitool/Input/InputAction.gd"
 }, {
 "base": "Node",
 "class": "SavaManager",
 "language": "GDScript",
-"path": "res://addons/mros/module/Unitool/File/SaveManager.gd"
+"path": "res://addons/miros/module/Unitool/File/SaveManager.gd"
 }, {
 "base": "AudioStreamPlayer",
 "class": "SoundManager",
 "language": "GDScript",
-"path": "res://addons/mros/module/Unitool/SoundManager.gd"
+"path": "res://addons/miros/module/Unitool/SoundManager.gd"
 }, {
 "base": "Node2D",
 "class": "Tilemap",
 "language": "GDScript",
-"path": "res://addons/mros/module/TileEditor/Tilemap.gd"
+"path": "res://addons/miros/module/TileEditor/Tilemap.gd"
 }, {
-"base": "Node",
+"base": "Reference",
 "class": "Timeline",
 "language": "GDScript",
-"path": "res://addons/mros/module/Timeline/Timeline.gd"
+"path": "res://addons/miros/module/Timeline/TImeline.gd"
+}, {
+"base": "Node",
+"class": "TimelineManager",
+"language": "GDScript",
+"path": "res://addons/miros/module/Timeline/TimelineManager.gd"
+}, {
+"base": "Node",
+"class": "UIBuilder",
+"language": "GDScript",
+"path": "res://addons/miros/module/Unitool/UI/UIBuilder.gd"
 } ]
 _global_script_class_icons={
+"ActionManager": "",
 "BTGraphResource": "",
 "GameTool": "",
 "InputAction": "",
 "SavaManager": "",
 "SoundManager": "",
 "Tilemap": "",
-"Timeline": ""
+"Timeline": "",
+"TimelineManager": "",
+"UIBuilder": ""
 }
 
 [application]
 
-config/name="Mros"
+config/name="Miros"
 config/description="Game make tool."
 run/main_scene="res://Test/test.tscn"
 config/icon="res://icon.png"
