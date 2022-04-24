@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=2]
 
-[ext_resource path="res://addons/miros/module/BehaviorTree/Util/BTGraph/BTGraph.gd" type="Script" id=1]
+[ext_resource path="res://addons/miros/module/BehaviorTree/Util/BTGraph/BTGraphCore.gd" type="Script" id=1]
 [ext_resource path="res://addons/miros/module/BehaviorTree/Util/BTGraph/BTGraphUI.gd" type="Script" id=2]
 
 [node name="BTGraph" type="Control"]
@@ -24,7 +24,7 @@ __meta__ = {
 "_edit_use_anchors_": true
 }
 
-[node name="Context" type="PanelContainer" parent="UI"]
+[node name="ContextNode" type="PanelContainer" parent="UI"]
 visible = false
 margin_right = 14.0
 margin_bottom = 14.0
@@ -32,35 +32,40 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="VBoxContainer" type="VBoxContainer" parent="UI/Context"]
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/ContextNode"]
 margin_left = 7.0
 margin_top = 7.0
 margin_right = 7.0
 margin_bottom = 7.0
 
-[node name="Menu" type="PanelContainer" parent="UI"]
-anchor_left = 1.0
-anchor_right = 1.0
-margin_left = -235.0
-margin_bottom = 61.0
+[node name="ContextAction" type="PanelContainer" parent="UI"]
+visible = false
+margin_right = 14.0
+margin_bottom = 14.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/ContextAction"]
+margin_left = 7.0
+margin_top = 7.0
+margin_right = 7.0
+margin_bottom = 7.0
 
 [node name="FileDialog" type="FileDialog" parent="UI"]
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-margin_left = -157.5
-margin_top = -65.75
-margin_right = 157.5
-margin_bottom = 65.75
+margin_left = -157.0
+margin_top = -65.5001
+margin_right = 299.0
+margin_bottom = 218.5
 rect_min_size = Vector2( 250, 87.5 )
-
-[node name="ShowInspector" type="Button" parent="UI"]
-margin_left = 33.0
-margin_top = 13.0
-margin_right = 117.0
-margin_bottom = 47.0
-text = "ShowInspector"
+window_title = "Open a File or Directory"
+mode = 3
 
 [connection signal="connection_request" from="GraphEdit" to="." method="_on_GraphEdit_connection_request"]
-[connection signal="pressed" from="UI/ShowInspector" to="." method="_on_ShowInspector_pressed"]
+[connection signal="node_selected" from="GraphEdit" to="." method="_on_GraphEdit_node_selected"]
+[connection signal="node_unselected" from="GraphEdit" to="." method="_on_GraphEdit_node_unselected"]
+[connection signal="confirmed" from="UI/FileDialog" to="." method="_on_FileDialog_confirmed"]

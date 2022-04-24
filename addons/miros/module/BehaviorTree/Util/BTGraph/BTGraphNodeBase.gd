@@ -2,14 +2,16 @@ tool
 extends GraphNode
 
 var graph
-# 连接该节点的左右节点的字典,key为节点引用,value为节点自身信息
+var type
+# 保存连接该节点的左右节点
 var left_nodes:Array
 var right_nodes:Array
 
 export var action_name:String 
 
 func _on_GraphNode_dragged(from, to):
-	graph._plugin.get_editor_interface().inspect_object(self)
+	#graph._plugin.get_editor_interface().inspect_object(self)
+	pass
 	
 
 func _on_GraphNode_resize_request(new_minsize):
@@ -32,18 +34,18 @@ func remove_node(node):
 	if right_nodes.has(node):
 		right_nodes.erase(node)
 
-func _parse_begin(plugin:EditorInspectorPlugin):
-	plugin.add_custom_control(UIBuilder.create_category_header("Graph Node"))
-	
-	var dropdown = OptionButton.new()
-	for action in graph.actions:
-		dropdown.add_item(action)
-	dropdown.connect("item_selected",self,"_on_item_selected",[dropdown])
-	plugin.add_custom_control(dropdown)
-	
-func _on_item_selected(index:int,dropdown:OptionButton):
-	action_name = dropdown.get_item_text(index)
-	graph.refresh_inspecter()
+#func _parse_begin(plugin:EditorInspectorPlugin):
+#	plugin.add_custom_control(UIBuilder.create_category_header("Graph Node"))
+#
+#	var dropdown = OptionButton.new()
+#	for action in graph.actions:
+#		dropdown.add_item(action)
+#	dropdown.connect("item_selected",self,"_on_item_selected",[dropdown])
+#	plugin.add_custom_control(dropdown)
+#
+#func _on_item_selected(index:int,dropdown:OptionButton):
+#	action_name = dropdown.get_item_text(index)
+#	graph.refresh_inspecter()
 	
 	
 

@@ -20,7 +20,7 @@ func Execute(delta)->int:
 		if liveTime>=t["stamp"]:
 			var action=t["action"]
 			var state = action.actionState
-			if state == action.ACTION_STATE.SUCCESS or state == action.ACTION_STATE.FAILED:
+			if state == action.ACTION_STATE.SUCCEED or state == action.ACTION_STATE.FAILED:
 				isAllOver = true
 			else:
 				action.execute(delta)

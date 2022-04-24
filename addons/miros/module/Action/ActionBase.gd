@@ -13,7 +13,7 @@ enum ACTION_STATE{
 	NULL,
 	PREPARE,
 	RUNNING,
-	SUCCESS,
+	SUCCEED,
 	FAILED,
 }
 
@@ -26,6 +26,7 @@ var actionFunc:FuncRef
 var actionArgs:Dictionary setget set_action_args
 var actionLiveTime:float
 var currentTime:float = 0
+
 
 
 func _init(name:String,live_time:float=1,type=1,args:Dictionary={}):
@@ -62,18 +63,20 @@ func _over_condition()->bool:
 # 执行Action,返回Action状态
 func execute(delta)->int:
 	# 如果动作生命时长结束，则结束, actionLiveTime初始值设置为-1时生命时长无限
-	if !currentTime == -1:
-		currentTime += delta
-	if currentTime >= actionLiveTime: 
-		actionState = ACTION_STATE.FAILED
+	currentTime += delta
+	if actionLiveTime == -1:
+		pass
+	else:
+		if currentTime >= actionLiveTime: 
+			actionState = ACTION_STATE.FAILED
 	# 如果动作执行完毕，则结束
-	if actionState == ACTION_STATE.SUCCESS or actionState == ACTION_STATE.FAILED:
+	if actionState == ACTION_STATE.SUCCEED or actionState == ACTION_STATE.FAILED:
 		return actionState
 
 	if actionType == ACTION_TYPE.SLOT: # 单次Action
 		actionState = ACTION_STATE.RUNNING
 		actionFunc.call_func()
-		actionState = ACTION_STATE.SUCCESS
+		actionState = ACTION_STATE.SUCCEED
 	elif actionType == ACTION_TYPE.LOOP: # 循环Action
 		if actionState == ACTION_STATE.PREPARE: # 如果准备执行，则执行
 			if actionStartCondition == null: # 如果没有设置开始条件，则直接执行
@@ -86,12 +89,13 @@ func execute(delta)->int:
 		elif actionState == ACTION_STATE.RUNNING: # 如果正在执行，则继续执行
 			if actionOverCondition == null: # 如果没有设置结束条件，则直接结束
 				actionFunc.call_func()
-				actionState = ACTION_STATE.SUCCESS
+				actionState = ACTION_STATE.SUCCEED
 			else: 
 				if actionOverCondition.call_func() == true: # 如果结束条件成立，则结束
-					actionState = ACTION_STATE.SUCCESS
+					actionState = ACTION_STATE.SUCCEED
 				else: # 如果结束条件不成立，则继续执行
 					actionFunc.call_func()
+					actionState = ACTION_STATE.RUNNING
 	# 返回动作状态
 	return actionState
 	

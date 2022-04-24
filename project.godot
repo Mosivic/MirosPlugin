@@ -14,10 +14,20 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://addons/miros/module/Action/ActionManager.gd"
 }, {
+"base": "Node",
+"class": "BTEngine",
+"language": "GDScript",
+"path": "res://addons/miros/module/BehaviorTree/Util/BTEngine.gd"
+}, {
 "base": "Resource",
 "class": "BTGraphResource",
 "language": "GDScript",
 "path": "res://addons/miros/module/BehaviorTree/Util/BTGraph/BTGraphResource.gd"
+}, {
+"base": "Node",
+"class": "BTNodeBase",
+"language": "GDScript",
+"path": "res://addons/miros/module/BehaviorTree/Node/BTNode.gd"
 }, {
 "base": "Node2D",
 "class": "GameTool",
@@ -61,7 +71,9 @@ _global_script_classes=[ {
 } ]
 _global_script_class_icons={
 "ActionManager": "",
+"BTEngine": "",
 "BTGraphResource": "",
+"BTNodeBase": "",
 "GameTool": "",
 "InputAction": "",
 "SavaManager": "",

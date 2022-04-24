@@ -37,11 +37,11 @@ func get_node_icon(node_name: String):
 	return get_editor_interface().get_base_control().get_icon(node_name, "EditorIcons")
 
 
-func handles(object:Object)->bool:
-	if  BTClassDB.is_bt_node(object):
-		return true
-	else:
-		return false
+#func handles(object:Object)->bool:
+#	if  BTClassDB.is_bt_node(object):
+#		return true
+#	else:
+#		return false
 		
 func make_visible(visible:bool)->void:
 	if visible:
