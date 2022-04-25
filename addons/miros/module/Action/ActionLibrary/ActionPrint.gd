@@ -7,4 +7,4 @@ func _init(name:String="ActionPrint",live_time:float=1,type=1,args:Dictionary={}
 	
 	
 func _action():
-	print("hello")
+	print(actionArgs["random_temp"])

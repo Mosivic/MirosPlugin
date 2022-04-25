@@ -12,10 +12,10 @@ func set_plugin(value:EditorPlugin):
 	if not self.is_inside_tree():
 		yield(self,"ready")
 	
-	for key in BTClassBD.BTNode.keys():
-		var b = ToolButton.new()
+	for key in BTClassBD.BTNodeClass.keys():
+		var b = Button.new()
 		b.set_meta("bt_data",{
-			script = BTClassBD.BTNode[key] ,
+			script = BTClassBD.BTNodeClass[key] ,
 			name = key,
 		})
 		b.text = key

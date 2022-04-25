@@ -89,12 +89,10 @@ func _parse_next_node(next_node_name:String):
 			_set_current_node(next_node_name)
 
 # 生成action,重建graph_data
+# 给原有的data上添加实例化的action引用
 func _generate_action():
 	for key in graph_data.keys():
 		var action_name = graph_data[key]["action_name"]
-		if action_name == "":
-			action_name = "ActionEmpty"
-			graph_data[key]["action_name"] = action_name
 		var action = ActionBD.Actions[action_name].new()
 		action.set_action_args(action_args)
 		graph_data[key]["action"] = action
@@ -103,9 +101,9 @@ func _generate_action():
 # 设置当前结点为Root
 func _set_current_node_root():
 	for key in graph_data.keys():
-		if graph_data[key]["type"] == "Root":
-			var n:String =  BTClassBD.BTNode.Root
-			current_node = load(n)
+		if graph_data[key]["node_class"] == "Root":
+			var k = graph_data[key]["node_class"]
+			current_node = load(BTClassBD.BTNodeClass[k])
 			current_node_name = graph_data[key]["name"] 
 			current_node_data = graph_data[key]
 			current_node_action = graph_data[key]["action"]
@@ -116,10 +114,14 @@ func _set_current_node_root():
 func _set_current_node(node_name:String):
 	current_node_data = graph_data[node_name]
 	current_node_name = node_name
-	current_node = load(BTClassBD.BTNode[current_node_data["type"]])
+	var k = current_node_data["node_class"]
+	current_node = load(BTClassBD.BTNodeClass[k])
 	current_node_action = current_node_data["action"]
-	#action重置
+	#action重置, 当前结点与其子结点
 	current_node_action.reset()
+	for child_node_name in current_node_data["children_node"]:
+		graph_data[child_node_name]["action"].reset()
+
 
 func set_graph_data(_graph_data:Dictionary):
 	graph_data = _graph_data
@@ -127,3 +129,8 @@ func set_graph_data(_graph_data:Dictionary):
 
 func set_active(v:bool):
 	is_active = v
+	
+func get_decorater_script(_name:String):
+	var decorater = load(BTClassBD.BTDecoratorType[_name])
+	return decorater
+
