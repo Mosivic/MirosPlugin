@@ -27,4 +27,4 @@ static func _task(e:BTEngine)->int:
 		e.ACTION_STATE.FAILED:
 			e.action_args.erase("random_temp")
 			task_state = e.TASK_STATE.FAILED
-	return _wrap(e,task_state)
+	return task_state

@@ -86,14 +86,11 @@ func remove_decorator(_name:String):
 func has_decorator(_name:String)->bool:
 	return decorators.has(_name)
 
-
 func set_parent_node(_name:String):
 	parent_node = _name
 
-func clear_children():
+func clear_children_node():
 	children_node.clear()
-	
-
 
 func _on_Content_text_changed(new_text):
 	hint = new_text

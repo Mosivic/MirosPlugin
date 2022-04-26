@@ -57,13 +57,6 @@ margin_right = 40.0
 rect_min_size = Vector2( 0, 20 )
 custom_constants/separation = 0
 
-[node name="Tree" type="Tree" parent="UI"]
-margin_top = 40.0
-margin_right = 256.0
-margin_bottom = 560.0
-mouse_filter = 2
-columns = 2
-
 [node name="TreeCheckButton" type="CheckButton" parent="UI"]
 margin_left = 272.0
 margin_top = 10.0
@@ -74,9 +67,16 @@ text = "TREE"
 align = 2
 icon_align = 2
 
+[node name="Tree" type="Tree" parent="UI"]
+margin_top = 40.0
+margin_right = 256.0
+margin_bottom = 392.0
+mouse_filter = 1
+columns = 2
+
 [connection signal="connection_request" from="GraphEdit" to="." method="_on_GraphEdit_connection_request"]
 [connection signal="node_selected" from="GraphEdit" to="." method="_on_GraphEdit_node_selected"]
 [connection signal="node_unselected" from="GraphEdit" to="." method="_on_GraphEdit_node_unselected"]
-[connection signal="confirmed" from="UI/FileDialog" to="." method="_on_FileDialog_confirmed"]
-[connection signal="item_activated" from="UI/Tree" to="UI" method="_on_Tree_item_activated"]
+[connection signal="confirmed" from="UI/FileDialog" to="UI" method="_on_FileDialog_confirmed"]
 [connection signal="toggled" from="UI/TreeCheckButton" to="UI" method="_on_TreeCheckButton_toggled"]
+[connection signal="item_activated" from="UI/Tree" to="UI" method="_on_Tree_item_activated"]

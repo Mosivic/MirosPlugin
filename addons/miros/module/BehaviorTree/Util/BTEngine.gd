@@ -53,6 +53,7 @@ func _process(delta):
 
 func run(delta):
 	var state:int = current_node._task(self)
+	state = current_node._wrap(self,state)
 	match state:
 		TASK_STATE.NULL: #TASK_STATE:NULL
 			print_debug("BTEngine:current_node state is NULL.")
@@ -123,6 +124,7 @@ func _set_current_node(node_name:String):
 		graph_data[child_node_name]["action"].reset()
 
 
+
 func set_graph_data(_graph_data:Dictionary):
 	graph_data = _graph_data
 
@@ -130,7 +132,7 @@ func set_graph_data(_graph_data:Dictionary):
 func set_active(v:bool):
 	is_active = v
 	
-func get_decorater_script(_name:String):
-	var decorater = load(BTClassBD.BTDecoratorType[_name])
-	return decorater
+func get_decorator_script(_name:String):
+	var decorator = load(BTClassBD.BTDecoratorType[_name])
+	return decorator
 

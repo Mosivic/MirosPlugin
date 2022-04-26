@@ -1,39 +1,30 @@
 tool
 extends Control
 
-const FILE_MODE = {
-	NULL=0,
-	SAVE=1,
-	LOAD=2
-}
-var file_mode = FILE_MODE.NULL
-
 onready var file_dialog:FileDialog = get_node("./UI/FileDialog")
 # 行为树Graph
 onready var graph = $GraphEdit
-
+# UI
 onready var ui = $UI
 # 动作数据库
 const ActionBD = preload("res://addons/miros/module/Action/ActionBD.gd")
 # 行为树类数据库
 const BTClassBD = preload("res://addons/miros/module/BehaviorTree/Util/BTClassDB.gd")
-
+#
 const BTGraphNodeAssembler = preload("res://addons/miros/module/BehaviorTree/Util/BTGraph/BTGraphNodoAssembler.gd")
 # 行为树节点
 var bt_gragh_node = preload("res://addons/miros/module/BehaviorTree/Util/BTGraph/BTGraphNode.tscn")
-
-
 # 插件类引用
 var _plugin:EditorPlugin
 # Graph数据，key为node名称，value为node信息
 var graph_data = {}
 # Graph中被选中的GraphNode
 var selected_node:GraphNode
-# 当前层级
-
+# 
 var parent_node:String = "Root"
+#
 var children_node:Array
-
+# 当前层级
 var current_layer:String = parent_node
 
 func set_plugin(value:EditorPlugin):
@@ -45,101 +36,11 @@ func set_plugin(value:EditorPlugin):
 	_clear_graph()
 
 
-# 创建新结点
-# 创建结点实例， 赋值graph_core， title
-# 解包数据赋值于结点实例
-# 结点装配器加工结点
-# 结点UI生成
-func _create_node(info:Dictionary)->Node:
-	var n = bt_gragh_node.instance()
-	_unpack_node_info(n,info)
-	n.graph_core = self
-	n.title = n.name
-	n = BTGraphNodeAssembler.assemble_node(n)
-	for key in n.decorators.keys():
-		ui._build_decorator(n,key,n.decorators[key])
-	graph.add_child(n)
-	return n
+#------------------------------------------------------------------------------#
+#------------------------------------------------------------------------------#
+# Data Operation / 图数据操作
 
-# 设置该结点的父节点与之的子关系
-func _set_parent_to_child(node):
-	if node.parent_node == parent_node:
-		if !children_node.has(node.name):
-			children_node.append(node.name)
-	else:
-		var parent = _get_node_by_name(node.parent_node)
-		if !parent.has_child_node(node.name):
-			parent.add_child_node(node.name)
-
-# 创建子图
-# 隐藏图结点，清除图连接，指定当前结点为parent
-func _create_child_graph(parent:String):
-	_hide_graph()
-	graph.clear_connections()
-	var n = _get_node_by_name(parent)
-	current_layer = n.name
-	ui._set_path()
-
-# 销毁子图
-func _delete_child_graph(parent:String):
-	if parent == parent_node:
-		pass
-	else:
-		var n = _get_node_by_name(parent).clear_children()
-
-# 选择结点
-func _select_node(node):
-	selected_node = node
-	graph.set_selected(node)
-
-# 跳转到根图或子图
-# 判断是否有该子图, 或为根图
-# 隐藏图结点，清除图连接，设置当前层级为parent
-# 显示当前层级为parent的结点，重新构建连接
-func _jump_graph(parent:String):
-	if graph.has_node(parent) and graph.get_node(parent).children_node.size() != 0:
-		current_layer = parent
-	elif parent == parent_node:
-		current_layer = parent
-	else:
-		print_debug("未找到该层级")
-		return
-	_hide_graph()
-	graph.clear_connections()
-	for child in graph.get_children():
-		if child is GraphNode and child.parent_node == parent:
-				child.connect_all_node()
-				child.show()
-				
-# 连接节点, from为左节点name,to为右节点name
-func _on_GraphEdit_connection_request(from, from_slot, to, to_slot):
-	graph.connect_node(from, from_slot, to, to_slot)
-	_add_node_link_info(from,to)
-
-# 连接完成后各自将对方节点加入到节点信息中
-func _add_node_link_info(from:String,to:String):
-	var left = _get_node_by_name(from)
-	var right = _get_node_by_name(to)
-	left.add_right_node(right)
-	right.add_left_node(left)
-
-# 获取结点依靠结点名称
-func _get_node_by_name(_name:String)->GraphNode:
-	var node = graph.get_node(_name)
-	if node == null:
-		print("BTGraphCore:Can not get node with name: "+_name)
-		return node
-	else:
-		return node
-
-# 解除连接后清楚双方节点的节点信息
-func _remove_node_link_info(from:String,to:String):
-	var left = _get_node_by_name(from)
-	var right = _get_node_by_name(to)
-	left.remove_node(right)
-	right.remove_node(left)
-
-# 封装结点数据 - 用于保存结点数据
+# Pack node_info from Node 封装结点数据 - 用于保存结点数据
 func _pack_node_info(node)->Dictionary:
 	var data = {
 		"name":node.name,
@@ -155,7 +56,7 @@ func _pack_node_info(node)->Dictionary:
 	}
 	return data
 
-# 解包结点并赋值数据到结点实例 - 用于还原结点
+# Build Node from node_info / 解包结点并赋值数据到结点实例 - 用于还原结点
 func _unpack_node_info(node,info:Dictionary):
 	if !info.has("node_class"):
 		info.node_class = "Root"
@@ -188,7 +89,8 @@ func _unpack_node_info(node,info:Dictionary):
 	node.action_name = info.action_name
 	node.decorators = info.decorators
 
-# 从结点实例，生成图数据graph_data
+
+# Generate graph_data from Graph / 从结点实例，生成图数据graph_data
 func _make_graph_data():
 	if graph.get_child_count() == 0:return
 	graph_data.clear()
@@ -197,7 +99,7 @@ func _make_graph_data():
 		var info = _pack_node_info(node)
 		graph_data[node.name] = info
 
-# 从数据中加载图
+# Load Graph from graph_data / 从数据中加载图
 # 创建结点实例，并解包数据赋值实例上
 # 设定其父节点
 # 创建结点建连接
@@ -221,13 +123,89 @@ func _load_graph_from_data():
 	_jump_graph(parent_node)
 	ui._build_tree()
 
-# 删除指定结点
+# 保存数据检查
+# 根图和子图中只能存在一个Root结点
+func _save_data_check()->bool:
+	return true
+
+#------------------------------------------------------------------------------#
+#------------------------------------------------------------------------------#
+# Operate Graph instance node / 操作图中结点
+
+# 创建新结点
+# 创建结点实例， 赋值graph_core， title
+# 解包数据赋值于结点实例
+# 结点装配器加工结点
+# 结点UI生成
+func _create_node(info:Dictionary)->Node:
+	var n = bt_gragh_node.instance()
+	_unpack_node_info(n,info)
+	n.graph_core = self
+	n.title = n.name
+	n = BTGraphNodeAssembler.assemble_node(n)
+	for key in n.decorators.keys():
+		ui._build_decorator(n,key,n.decorators[key])
+	graph.add_child(n)
+	return n
+
+
+# Delete appoint node / 删除给定结点
 func _delete_node(node:Node):
 	if graph.has_node(node.name):
 		graph.remove_child(node)
 		node.queue_free()
 
-# 销毁所有结点与连接
+# 设置该结点的父节点与之的子关系
+func _set_parent_to_child(node):
+	if node.parent_node == parent_node:
+		if !children_node.has(node.name):
+			children_node.append(node.name)
+	else:
+		var parent = _get_node_by_name(node.parent_node)
+		if !parent.has_child_node(node.name):
+			parent.add_child_node(node.name)
+
+# 创建子图
+# 隐藏图结点，清除图连接，指定当前结点为parent
+func _create_child_graph(parent:String):
+	_hide_graph()
+	graph.clear_connections()
+	var n = _get_node_by_name(parent)
+	current_layer = n.name
+	ui._set_path()
+
+# 销毁子图
+func _delete_child_graph(parent:String):
+	if parent == parent_node:
+		pass
+	else:
+		var parent_node = _get_node_by_name(parent)
+		for child_name in parent_node.children_node:
+			var child_node = _get_node_by_name(parent)
+			graph.remove_child(child_node)
+			child_node.queue_free()
+		parent_node.clear_children_node()
+
+# 跳转到根图或子图
+# 判断是否有该子图, 或为根图
+# 隐藏图结点，清除图连接，设置当前层级为parent
+# 显示当前层级为parent的结点，重新构建连接
+func _jump_graph(parent:String):
+	if graph.has_node(parent) and graph.get_node(parent).children_node.size() != 0:
+		current_layer = parent
+	elif parent == parent_node:
+		current_layer = parent
+	else:
+		print_debug("未找到该层级")
+		return
+	_hide_graph()
+	graph.clear_connections()
+	for child in graph.get_children():
+		if child is GraphNode and child.parent_node == parent:
+				child.connect_all_node()
+				child.show()
+
+# Destory Graph / 销毁图
 func _clear_graph():
 	for node in graph.get_children():
 		if node is GraphNode:
@@ -237,16 +215,15 @@ func _clear_graph():
 	selected_node = null
 	graph.set_selected(null)
 
-# 隐藏所有结点
+# Hide Graph 
 func _hide_graph():
 	for node in graph.get_children():
 		if node is GraphNode:
 			node.hide()
 
-# 刷新Inspector
-func refresh_inspecter():
-	_plugin.get_editor_interface().inspect_object(self)
-	#_plugin.get_editor_interface().get_inspector().refresh()
+#------------------------------------------------------------------------------#
+#------------------------------------------------------------------------------#
+# Build Inspector
 
 func _parse_begin(plugin:EditorInspectorPlugin):
 	# 创建标题栏
@@ -273,8 +250,8 @@ func _parse_begin(plugin:EditorInspectorPlugin):
 	var loadButton = Button.new()
 	saveButton.text = "Save"
 	loadButton.text = "Load"
-	saveButton.connect("button_down",self,"_on_SaveBtn_pressed")
-	loadButton.connect("button_down",self,"_on_LoadBtn_pressed")
+	saveButton.connect("button_down",ui,"_on_SaveBtn_pressed")
+	loadButton.connect("button_down",ui,"_on_LoadBtn_pressed")
 	hbox.add_child(saveButton)
 	hbox.add_child(loadButton)
 	plugin.add_custom_control(hbox)
@@ -311,17 +288,20 @@ func _parse_begin_node(plugin:EditorInspectorPlugin):
 	hbox.add_child(button)
 	plugin.add_custom_control(hbox)
 
-func _on_createNodeButton_pressed(optionButton:OptionButton):
-	var nodeName = optionButton.get_item_text(optionButton.selected)
-	#_add_node(nodeName)
+# 刷新Inspector
+func refresh_inspecter():
+	_plugin.get_editor_interface().inspect_object(self)
+	#_plugin.get_editor_interface().get_inspector().refresh()
 
-func _on_SaveBtn_pressed():
-	file_dialog.popup_centered()
-	file_mode = FILE_MODE.SAVE
 
-func _on_LoadBtn_pressed():
-	file_dialog.popup_centered()
-	file_mode = FILE_MODE.LOAD
+#------------------------------------------------------------------------------#
+#------------------------------------------------------------------------------#
+# Node Seleted / 图中结点选择
+
+# 选择结点
+func _select_node(node):
+	selected_node = node
+	graph.set_selected(node)
 
 func _on_GraphEdit_node_selected(node):
 	_select_node(node)
@@ -329,30 +309,36 @@ func _on_GraphEdit_node_selected(node):
 func _on_GraphEdit_node_unselected(node):
 	_select_node(null)
 
-# 文件窗口按下确认事件
-func _on_FileDialog_confirmed():
-	if file_mode == FILE_MODE.SAVE:
-		var path:String = file_dialog.current_path
-		if path.split(".")[-1] == "res":
-			var res =ResourceLoader.load(path)
-			_make_graph_data()
-			res.data = graph_data.duplicate(true)
-			ResourceSaver.save(path,res)
-			print(graph_data)
-		
-	elif file_mode == FILE_MODE.LOAD:
-		_clear_graph()
-		var path = file_dialog.current_path
-		var res = ResourceLoader.load(path)
-		if !res.data.size() == 0:
-			graph_data = res.data.duplicate(true)
-			_load_graph_from_data()
+#------------------------------------------------------------------------------#
+#------------------------------------------------------------------------------#
+# Link Between Nodes / 结点连接
 
-# 保存数据检查
-# 根图和子图中只能存在一个Root结点
-func _save_data_check()->bool:
-	return true
+# 连接节点, from为左节点name,to为右节点name
+func _on_GraphEdit_connection_request(from, from_slot, to, to_slot):
+	graph.connect_node(from, from_slot, to, to_slot)
+	_add_node_link_info(from,to)
 
+# 连接完成后各自将对方节点加入到节点信息中
+func _add_node_link_info(from:String,to:String):
+	var left = _get_node_by_name(from)
+	var right = _get_node_by_name(to)
+	left.add_right_node(right)
+	right.add_left_node(left)
 
+# 获取结点依靠结点名称
+func _get_node_by_name(_name:String)->GraphNode:
+	var node = graph.get_node(_name)
+	if node == null:
+		print("BTGraphCore:Can not get node with name: "+_name)
+		return node
+	else:
+		return node
+# 解除连接后清楚双方节点的节点信息
+func _remove_node_link_info(from:String,to:String):
+	var left = _get_node_by_name(from)
+	var right = _get_node_by_name(to)
+	left.remove_node(right)
+	right.remove_node(left)
 
-
+#------------------------------------------------------------------------------#
+#------------------------------------------------------------------------------#

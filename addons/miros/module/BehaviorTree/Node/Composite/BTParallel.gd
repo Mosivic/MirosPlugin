@@ -25,5 +25,5 @@ static func _task(e:BTEngine)->int:
 		task_state = e.TASK_STATE.FAILED
 	else:
 		task_state = e.TASK_STATE.RUNNING
-	return _wrap(e,task_state)
+	return task_state
 

@@ -3,10 +3,8 @@
 [ext_resource path="res://addons/miros/module/BehaviorTree/Util/BTGraph/BTGraphNodeBase.gd" type="Script" id=1]
 
 [node name="BTGraphNode" type="GraphNode"]
-margin_left = 63.0
-margin_top = 111.0
-margin_right = 95.0
-margin_bottom = 141.0
+margin_right = 128.0
+margin_bottom = 94.0
 rect_min_size = Vector2( 128, 64 )
 mouse_filter = 1
 title = "Node"
@@ -44,7 +42,6 @@ margin_left = 38.0
 margin_right = 96.0
 margin_bottom = 24.0
 size_flags_horizontal = 3
-text = "NULL"
 align = 1
 placeholder_text = "输入结点提示名"
 
@@ -66,7 +63,6 @@ margin_left = 50.0
 margin_right = 96.0
 margin_bottom = 14.0
 size_flags_horizontal = 3
-text = "NULL"
 align = 1
 
 [node name="Action" type="HBoxContainer" parent="VBoxContainer"]
@@ -87,7 +83,6 @@ margin_left = 50.0
 margin_right = 96.0
 margin_bottom = 14.0
 size_flags_horizontal = 3
-text = "NULL"
 align = 1
 valign = 1
 

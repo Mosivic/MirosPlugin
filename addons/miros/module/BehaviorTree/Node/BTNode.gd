@@ -20,7 +20,7 @@ static func _task(e:BTEngine)->int:
 			task_state = e.TASK_STATE.SUCCEED
 		e.ACTION_STATE.FAILED: # FAILED
 			task_state = e.TASK_STATE.FAILED
-	return _wrap(e,task_state)
+	return task_state
 
 # 任务完成后处理
 static func _wrap(e:BTEngine,result:int)->int:
@@ -32,8 +32,8 @@ static func _wrap(e:BTEngine,result:int)->int:
 	var task_state = e.TASK_STATE.NULL
 	var is_succeed = true
 	var is_failed  = true
-	for decorator_name in decorators:
-		task_state = e.get_decorater_script(decorator_name)._decorate(e,result)
+	for key in decorators.keys():
+		task_state = e.get_decorator_script(key)._decorate(e,decorators[key],result)
 		if task_state == e.TASK_STATE.SUCCEED:
 			is_succeed = true
 			continue
@@ -74,4 +74,5 @@ static func _next(e:BTEngine,result:int)->String:
 		e.TASK_STATE.RUNNING:
 			next_node_name = "keep"
 	return next_node_name
+
 
