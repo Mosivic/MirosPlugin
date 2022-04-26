@@ -46,21 +46,30 @@ func set_plugin(value:EditorPlugin):
 
 
 # 创建新结点
+# 创建结点实例， 赋值graph_core， title
+# 解包数据赋值于结点实例
+# 结点装配器加工结点
+# 结点UI生成
 func _create_node(info:Dictionary)->Node:
 	var n = bt_gragh_node.instance()
 	_unpack_node_info(n,info)
 	n.graph_core = self
 	n.title = n.name
 	n = BTGraphNodeAssembler.assemble_node(n)
+	for key in n.decorators.keys():
+		ui._build_decorator(n,key,n.decorators[key])
 	graph.add_child(n)
 	return n
 
 # 设置该结点的父节点与之的子关系
-func _set_node_child(node):
-	if current_layer == parent_node:
-		children_node.append(node.name)
+func _set_parent_to_child(node):
+	if node.parent_node == parent_node:
+		if !children_node.has(node.name):
+			children_node.append(node.name)
 	else:
-		_get_node_by_name(current_layer).add_child_node(node.name)
+		var parent = _get_node_by_name(node.parent_node)
+		if !parent.has_child_node(node.name):
+			parent.add_child_node(node.name)
 
 # 创建子图
 # 隐藏图结点，清除图连接，指定当前结点为parent
@@ -77,6 +86,11 @@ func _delete_child_graph(parent:String):
 		pass
 	else:
 		var n = _get_node_by_name(parent).clear_children()
+
+# 选择结点
+func _select_node(node):
+	selected_node = node
+	graph.set_selected(node)
 
 # 跳转到根图或子图
 # 判断是否有该子图, 或为根图
@@ -96,13 +110,11 @@ func _jump_graph(parent:String):
 		if child is GraphNode and child.parent_node == parent:
 				child.connect_all_node()
 				child.show()
-
-
+				
 # 连接节点, from为左节点name,to为右节点name
 func _on_GraphEdit_connection_request(from, from_slot, to, to_slot):
 	graph.connect_node(from, from_slot, to, to_slot)
 	_add_node_link_info(from,to)
-	
 
 # 连接完成后各自将对方节点加入到节点信息中
 func _add_node_link_info(from:String,to:String):
@@ -111,6 +123,7 @@ func _add_node_link_info(from:String,to:String):
 	left.add_right_node(right)
 	right.add_left_node(left)
 
+# 获取结点依靠结点名称
 func _get_node_by_name(_name:String)->GraphNode:
 	var node = graph.get_node(_name)
 	if node == null:
@@ -126,9 +139,11 @@ func _remove_node_link_info(from:String,to:String):
 	left.remove_node(right)
 	right.remove_node(left)
 
+# 封装结点数据 - 用于保存结点数据
 func _pack_node_info(node)->Dictionary:
 	var data = {
 		"name":node.name,
+		"hint":node.hint,
 		"node_class":node.node_class,
 		"parent_node":node.parent_node,
 		"children_node":node.children_node,
@@ -140,11 +155,14 @@ func _pack_node_info(node)->Dictionary:
 	}
 	return data
 
+# 解包结点并赋值数据到结点实例 - 用于还原结点
 func _unpack_node_info(node,info:Dictionary):
 	if !info.has("node_class"):
 		info.node_class = "Root"
 	if !info.has("name"):
 		info.name = info.node_class + "_" +str(node.get_instance_id())
+	if !info.has("hint"):
+		info.hint = ""
 	if !info.has("parent_node"):
 		info.parent_node = current_layer
 	if !info.has("children_node"):
@@ -158,8 +176,9 @@ func _unpack_node_info(node,info:Dictionary):
 	if !info.has("action_name"):
 		info.action_name = "ActionEmpty"
 	if !info.has("decorators"):
-		info.decorators = []
+		info.decorators = {}
 	node.name = info.name
+	node.hint = info.hint
 	node.node_class = info.node_class
 	node.parent_node = info.parent_node 
 	node.children_node = info.children_node
@@ -168,8 +187,8 @@ func _unpack_node_info(node,info:Dictionary):
 	node.offset = info.offset
 	node.action_name = info.action_name
 	node.decorators = info.decorators
-	
 
+# 从结点实例，生成图数据graph_data
 func _make_graph_data():
 	if graph.get_child_count() == 0:return
 	graph_data.clear()
@@ -178,10 +197,18 @@ func _make_graph_data():
 		var info = _pack_node_info(node)
 		graph_data[node.name] = info
 
-
+# 从数据中加载图
+# 创建结点实例，并解包数据赋值实例上
+# 设定其父节点
+# 创建结点建连接
+# 跳转到根图上
+# 渲染结点树
 func _load_graph_from_data():
 	for node_data in graph_data.values():
-		_create_node(node_data)
+		var node = _create_node(node_data)
+	for child in graph.get_children():
+		if child is GraphNode:
+			_set_parent_to_child(child)
 	# 创建结点间连接
 	for node_data in graph_data.values():
 		var node_name = node_data["name"]
@@ -192,6 +219,7 @@ func _load_graph_from_data():
 		for r in node_data["right_nodes_name"]:
 			_on_GraphEdit_connection_request(node_name,0,r,0)
 	_jump_graph(parent_node)
+	ui._build_tree()
 
 # 删除指定结点
 func _delete_node(node:Node):
@@ -215,6 +243,7 @@ func _hide_graph():
 		if node is GraphNode:
 			node.hide()
 
+# 刷新Inspector
 func refresh_inspecter():
 	_plugin.get_editor_interface().inspect_object(self)
 	#_plugin.get_editor_interface().get_inspector().refresh()
@@ -259,8 +288,6 @@ func _parse_begin(plugin:EditorInspectorPlugin):
 	# 显示被选择结点
 	if !selected_node == null:
 		_parse_begin_node(plugin)
-	
-
 
 func _parse_begin_node(plugin:EditorInspectorPlugin):
 	plugin.add_custom_control(UIBuilder.create_category_header(selected_node.name))
@@ -284,29 +311,23 @@ func _parse_begin_node(plugin:EditorInspectorPlugin):
 	hbox.add_child(button)
 	plugin.add_custom_control(hbox)
 
-
 func _on_createNodeButton_pressed(optionButton:OptionButton):
 	var nodeName = optionButton.get_item_text(optionButton.selected)
 	#_add_node(nodeName)
-
 
 func _on_SaveBtn_pressed():
 	file_dialog.popup_centered()
 	file_mode = FILE_MODE.SAVE
 
-
 func _on_LoadBtn_pressed():
 	file_dialog.popup_centered()
 	file_mode = FILE_MODE.LOAD
 
-
 func _on_GraphEdit_node_selected(node):
-	selected_node = node
-
+	_select_node(node)
 
 func _on_GraphEdit_node_unselected(node):
-	selected_node = null
-
+	_select_node(null)
 
 # 文件窗口按下确认事件
 func _on_FileDialog_confirmed():

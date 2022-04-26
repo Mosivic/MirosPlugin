@@ -6,10 +6,12 @@ const ActionBD = preload("res://addons/miros/module/Action/ActionBD.gd")
 # 行为树类数据库
 const BTClassBD = preload("res://addons/miros/module/BehaviorTree/Util/BTClassDB.gd")
 
+const decorator_instance = preload("res://addons/miros/module/BehaviorTree/Util/BTGraph/Decorator.tscn")
 
 onready var context_box = $Context/VBoxContainer
 onready var context = $Context
 onready var path = $Path
+onready var tree = $Tree
 
 var graph_core 
 
@@ -17,6 +19,7 @@ var context_button_db:Dictionary
 
 func init(core):
 	graph_core = core
+	
 
 
 func _input(event):
@@ -176,11 +179,58 @@ func _add_decoretor_context(b:Button):
 		)
 	_show_context()
 
+# 创建装饰
+func _build_decorator(node,_name,_arg):
+	var decorator = decorator_instance.instance()
+	decorator.get_node("Name").text = _name
+	decorator.get_node("Delete").connect("button_down",self,"_on_delete_decorator_button_pressed",[decorator])
+	decorator.get_node("Arg").connect("changed",self,"on_decorator_arg_changed",[decorator])
+	node.add_decorator(_name,_arg)
+	node.find_node("Decorators").add_child(decorator)
+
+# 添加装饰按钮按下
 func _on_add_decoretor_button_pressed(b:Button):
 	if graph_core.selected_node != null:
-		graph_core.selected_node.add_decorator(b.get_meta("bt_data")["type"])
+		var decorator_name = b.get_meta("bt_data")["type"]
+		var node:Control = graph_core.selected_node
+		if node.has_decorator(decorator_name):
+			print("装饰已存在，不可反复添加")
+			return
+		_build_decorator(node,decorator_name,0)
 	_hide_context()
+
+# 删除装饰按钮按下
+func _on_delete_decorator_button_pressed(decorater:Control):
+	var node = decorater.get_parent().get_parent().get_parent()
+	node.find_node("Decorators").remove_child(decorater)
+	node.remove_decorator(decorater.get_node("Name").text)
+	decorater.queue_free()
+
+# 装饰参数发生改变
+func on_decorator_arg_changed(decorater):
+	var _name = decorater.get_node("Name").text
+	var arg = decorater.get_node("Arg").text
+	var node = decorater.get_parent().get_parent().get_parent()
+	node._add_decoretor(_name,arg)
+
+
+# 建立树
+# 根据图中结点建立
+func _build_tree():
+	_build_tree_part(graph_core,null)
 	
+# 建立部分树
+# 根据给出的开始图建立
+func _build_tree_part(current_layer,current_parent_branch):
+	var children_node = current_layer.children_node
+	for child_name in children_node:
+		var branch = tree.create_item(current_parent_branch)
+		current_layer = graph_core._get_node_by_name(child_name)
+		branch.set_text(0,child_name)
+		branch.set_text(1,current_layer["hint"])
+
+		_build_tree_part(current_layer,branch)
+		
 # 路径按钮按下
 # 跳转子图
 # 重构路径
@@ -201,3 +251,21 @@ func _enter_child_graph(b:Button):
 	graph_core.selected_node = null
 	_hide_context()
 	_set_path()
+
+
+# TreeCheckButton按下
+# 显示或隐藏结点树
+func _on_TreeCheckButton_toggled(button_pressed):
+	if tree != null:
+		tree.set_visible(button_pressed)
+
+
+# 结点树中item被双击
+# 跳转到该item的结点图中，并设置该结点为selected
+func _on_Tree_item_activated():
+	var item = tree.get_selected() 
+	var node_name = item.get_text(0)
+	var node:GraphNode = graph_core._get_node_by_name(node_name)
+	graph_core._jump_graph(node.parent_node)
+	graph_core._select_node(node)
+	

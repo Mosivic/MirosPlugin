@@ -8,27 +8,32 @@ var right_nodes:Array
 var left_nodes_name:Array
 var right_nodes_name:Array
 
-var graph_core
+var hint:String 
 
-var node_class
+var graph_core:Node
 
+var node_class:String
 
 var action_name:String 
+
+var state:String
 
 var parent_node:String
 
 var children_node:Array
 
-var decorators:Array
+var decorators:Dictionary
 
-func _on_GraphNode_dragged(from, to):
-	#graph._plugin.get_editor_interface().inspect_object(self)
-	pass
-	
+
+func _ready():
+	get_node("VBoxContainer/Hint/Content").text = hint
+	get_node("VBoxContainer/Action/Content").text = action_name
+	get_node("VBoxContainer/State/Content").text = state
+
 
 func _on_GraphNode_resize_request(new_minsize):
 	rect_size = new_minsize
-
+	
 # 添加左节点集
 func add_left_node(node):
 	if  !left_nodes.has(node) and node != null:
@@ -50,7 +55,7 @@ func remove_node(node):
 
 func set_action_name(v):
 	action_name = v
-	get_node("Action/Content").text = action_name
+	get_node("VBoxContainer/Action/Content").text = action_name
 
 
 # 根据保存的left_nodes和right_nodes构建连接
@@ -69,11 +74,18 @@ func add_child_node(_name:String):
 func remove_child_node(_name:String):
 	children_node.erase(_name)
 
-func add_decorator(_name:String):
-	decorators.append(_name)
+func has_child_node(_name:String)->bool:
+	return children_node.has(_name)
+
+func add_decorator(_name:String,arg:int):
+	decorators[_name] = arg
 
 func remove_decorator(_name:String):
 	decorators.erase(_name)
+
+func has_decorator(_name:String)->bool:
+	return decorators.has(_name)
+
 
 func set_parent_node(_name:String):
 	parent_node = _name
@@ -81,3 +93,7 @@ func set_parent_node(_name:String):
 func clear_children():
 	children_node.clear()
 	
+
+
+func _on_Content_text_changed(new_text):
+	hint = new_text
