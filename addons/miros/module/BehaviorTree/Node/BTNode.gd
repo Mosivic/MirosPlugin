@@ -4,23 +4,24 @@ class_name BTNodeBase
 
 
 # 节点任务
-static func _task(e:BTEngine)->int:
-	var action = e.current_node_data["action"]
-	var delta = e.get_process_delta_time()
-	var action_state = action.execute(delta)
+static func _task(e:BTEngine,action_func_type:int,delta)->int:
 	var task_state 
+	var action = e.current_node_data["action"]
+	aciton_execute(e,action,action_func_type,delta)
+	var action_state = action.get_state()
 	match action_state:
-		e.ACTION_STATE.NULL:# NULL
+		e.ACTION_STATE.NULL:
 			task_state = e.TASK_STATE.NULL
-		e.ACTION_STATE.PREPARE:# PREPARE
-			pass
-		e.ACTION_STATE.RUNNING:# RUNNING
+		e.ACTION_STATE.PREPARE:
 			task_state = e.TASK_STATE.RUNNING
-		e.ACTION_STATE.SUCCEED: # SUCCEED,
+		e.ACTION_STATE.RUNNING:
+			task_state = e.TASK_STATE.RUNNING
+		e.ACTION_STATE.SUCCEED: 
 			task_state = e.TASK_STATE.SUCCEED
-		e.ACTION_STATE.FAILED: # FAILED
+		e.ACTION_STATE.FAILED: 
 			task_state = e.TASK_STATE.FAILED
-	return task_state
+	return _wrap(e,task_state)
+
 
 # 任务完成后处理
 static func _wrap(e:BTEngine,result:int)->int:
@@ -75,4 +76,10 @@ static func _next(e:BTEngine,result:int)->String:
 			next_node_name = "keep"
 	return next_node_name
 
+static func aciton_execute(e:BTEngine,action,action_func_type,delta):
+	match action_func_type:
+		e.ACTION_FUNC_TYPE.PROCESS:
+			 action.execute_process(delta)
+		e.ACTION_FUNC_TYPE.PHYSICS_PROCESS:
+			 action.execute_physics_process(delta)
 

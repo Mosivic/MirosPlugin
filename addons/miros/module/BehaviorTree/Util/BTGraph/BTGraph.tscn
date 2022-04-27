@@ -65,7 +65,6 @@ margin_bottom = 35.0
 pressed = true
 text = "TREE"
 align = 2
-icon_align = 2
 
 [node name="Tree" type="Tree" parent="UI"]
 margin_top = 40.0
