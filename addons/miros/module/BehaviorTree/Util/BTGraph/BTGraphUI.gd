@@ -31,8 +31,10 @@ func init(core):
 
 
 func _input(event):
-	if event.is_pressed(): 
-		if event.button_index == BUTTON_RIGHT:
+	if event.is_pressed() :
+		if event.has_meta("button_index"):
+			print("hai")
+		if  event.button_index == BUTTON_RIGHT:
 			if graph_core.selected_node == null:
 				_build_main_context()
 			else:
@@ -120,7 +122,7 @@ func _on_create_node_button_pressed(b:Button):
 	var node = graph_core._create_node({
 		"node_class":data.node_class,
 	})
-	graph_core._set_node_child(node)
+	graph_core._set_parent_to_child(node)
 	_hide_context()
 
 # 选择Ation From Context
@@ -294,6 +296,7 @@ func _on_TreeCheckButton_toggled(button_pressed):
 func _on_Tree_item_activated():
 	var item = tree.get_selected() 
 	var node_name = item.get_text(0)
+	if node_name == "BTREE":return
 	var node:GraphNode = graph_core._get_node_by_name(node_name)
 	graph_core._jump_graph(node.parent_node)
 	graph_core._select_node(node)

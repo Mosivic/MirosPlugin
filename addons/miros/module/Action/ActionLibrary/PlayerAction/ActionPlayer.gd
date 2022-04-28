@@ -2,19 +2,19 @@ extends "res://addons/miros/module/Action/ActionBase.gd"
 
 var actor:Node
 
-# 
 # 无限生命时长，循环
-func _init(name:String="ActionMove",live_time:float=-1,type=2,args:Dictionary={}).(name,live_time,type,args):
+func _init(name:String="PlayerAction",live_time:float=-1,type=2).(name,live_time,type):
 	pass
 
-func _action():
+func _action_process(delta):
 	pass
 
-func _actor_update():
+func _action_physics_process(delta):
 	pass
 
-func _sound_update():
-	pass
 
-func _ui_update():
-	pass
+func _start_condition()->bool:
+	return true
+	
+func _over_condition()->bool:
+	return true

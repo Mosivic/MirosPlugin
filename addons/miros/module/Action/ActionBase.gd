@@ -24,7 +24,7 @@ var actionType = ACTION_TYPE.NULL
 
 var actionStartCondition:FuncRef setget set_start_condition
 var actionOverCondition:FuncRef setget set_over_condition
-var actionArgs:Dictionary setget set_action_args
+var actionArgs:Reference setget set_action_args
 var actionLiveTime:float
 var currentTime:float = 0
 
@@ -32,8 +32,8 @@ var actionState = ACTION_STATE.NULL
 var actionStateProcess = ACTION_STATE.NULL
 var actionStatePhysicsProcess = ACTION_STATE.NULL
 
-func _init(name:String,live_time:float=1,type:int=1,args:Dictionary={}):
-	build(name,live_time,type,args)
+func _init(name:String,live_time:float=1,type:int=1):
+	build(name,live_time,type)
 
 # 构建Action
 # @param actionName:动作名称
@@ -59,10 +59,10 @@ func _start_condition()->bool:
 func _over_condition()->bool:
 	return true
 
-func _action_physics_process():
+func _action_physics_process(delta):
 	return
 
-func _action_process():
+func _action_process(delta):
 	pass
 
 func get_state()->int:
@@ -100,7 +100,7 @@ func _execute(delta,_actionFunc:FuncRef,state,is_physics:bool)->int:
 
 	if actionType == ACTION_TYPE.SLOT: # 单次Action
 		state = ACTION_STATE.RUNNING
-		_actionFunc.call_func()
+		_actionFunc.call_func(delta)
 		state = ACTION_STATE.SUCCEED
 	elif actionType == ACTION_TYPE.LOOP: # 循环Action
 		if state == ACTION_STATE.PREPARE: # 如果准备执行，则执行
@@ -113,22 +113,22 @@ func _execute(delta,_actionFunc:FuncRef,state,is_physics:bool)->int:
 					state = ACTION_STATE.PREPARE
 		elif state == ACTION_STATE.RUNNING: # 如果正在执行，则继续执行
 			if actionOverCondition == null: # 如果没有设置结束条件，则直接结束
-				_actionFunc.call_func()
+				_actionFunc.call_func(delta)
 				state = ACTION_STATE.SUCCEED
 			else: 
 				if actionOverCondition.call_func() == true: # 如果结束条件成立，则结束
 					state = ACTION_STATE.SUCCEED
 
 				else: # 如果结束条件不成立，则继续执行
-					_actionFunc.call_func()
+					_actionFunc.call_func(delta)
 					state = ACTION_STATE.RUNNING
 	# 返回动作状态
 	return state
 
 
 
-func set_action_args(args:Dictionary):
-	actionArgs = args
+func set_action_args(v:Reference):
+	actionArgs = v
 
 func set_start_condition(condition:FuncRef):
 	actionStartCondition = condition

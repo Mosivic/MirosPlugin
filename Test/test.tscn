@@ -1,14 +1,30 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=7 format=2]
 
-[ext_resource path="res://Test/TestBT.gd" type="Script" id=1]
-[ext_resource path="res://asd.res" type="Resource" id=2]
-[ext_resource path="res://Test/ColorRect.gd" type="Script" id=5]
+[ext_resource path="res://addons/miros/module/OneModel/OneData.tscn" type="PackedScene" id=1]
+[ext_resource path="res://Test/TestMove.gd" type="Script" id=2]
+[ext_resource path="res://addons/editor_icon_previewer/icon.png" type="Texture" id=3]
+[ext_resource path="res://asd.res" type="Resource" id=4]
+[ext_resource path="res://new_resource.tres" type="Resource" id=5]
+
+[sub_resource type="RectangleShape2D" id=1]
+extents = Vector2( 39, 39 )
 
 [node name="Node2D" type="Node2D"]
-script = ExtResource( 1 )
-test_res = ExtResource( 2 )
 
-[node name="ColorRect" type="Tree" parent="."]
-margin_right = 40.0
-margin_bottom = 40.0
-script = ExtResource( 5 )
+[node name="KinematicBody2D" type="KinematicBody2D" parent="."]
+position = Vector2( 299, 292 )
+script = ExtResource( 2 )
+test_res = ExtResource( 4 )
+args_res = ExtResource( 5 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="KinematicBody2D"]
+shape = SubResource( 1 )
+
+[node name="Sprite" type="Sprite" parent="KinematicBody2D"]
+texture = ExtResource( 3 )
+
+[node name="OneData" parent="KinematicBody2D" instance=ExtResource( 1 )]
+custom_property = {
+"attack": 4,
+"hp": 100.0
+}

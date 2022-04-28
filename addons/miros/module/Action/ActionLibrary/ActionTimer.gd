@@ -5,7 +5,7 @@
 extends "res://addons/miros/module/Action/ActionBase.gd"
 
 
-func _init(name:String="ActionTimer",live_time:float=-1,type=2,args:Dictionary={}).(name,live_time,type,args):
+func _init(name:String="ActionTimer",live_time:float=-1,type=2).(name,live_time,type):
 	pass
 	
 

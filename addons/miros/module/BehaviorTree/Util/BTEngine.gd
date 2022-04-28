@@ -37,7 +37,7 @@ var actor:Node
 # Graph结点数据
 var graph_data:Dictionary setget set_graph_data
 # 行为参数
-var action_args:Dictionary
+var action_args:Reference
 # 是否激活
 var is_active:bool=false setget set_active
 
@@ -48,7 +48,7 @@ var task_state:int  = TASK_STATE.NULL
 var is_task_process:bool = false
 var is_task_physics_process:bool = false
 
-func _init(actor:Node,graph_data:Dictionary,action_args:Dictionary):
+func _init(actor:Node,graph_data:Dictionary,action_args:Reference):
 	self.action_args = action_args
 	self.graph_data = graph_data
 	self.actor = actor
@@ -81,7 +81,7 @@ func state_check():
 		TASK_STATE.NULL:
 			pass
 		TASK_STATE.RUNNING:
-			print("BTEngine: "+current_node_name+" is running..")
+			pass
 		TASK_STATE.SUCCEED:
 			print("BTEngine: "+current_node_name+" is succeed.")
 			var next_name = current_node._next(self,TASK_STATE.SUCCEED)

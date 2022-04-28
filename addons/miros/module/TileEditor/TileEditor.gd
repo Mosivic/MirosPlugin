@@ -1,4 +1,4 @@
-
+tool
 extends Node2D
 
 export(NodePath) var tilemap_node_path 
@@ -12,9 +12,9 @@ export(Vector2) var square_zero
 export(Vector2) var square_size
 export(bool) var square_create setget set_square_create 
 
-var tile_tscn:Node # preload("res://Prefab/Tile.tscn")
+var tile_tscn: = preload("res://addons/miros/module/TileEditor/TileInstance/Tile.tscn")
 
-const line_slope = 0.5
+const line_slope = 0.5 
 const line_length = 2560
 const line_count = 40
 const tile_width = 64
