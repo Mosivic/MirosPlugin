@@ -109,7 +109,7 @@ func caculate_property(_property_name:String,_value:float,_caculate_mode:int=1):
 	data[_property_name] = property
  
 
-func add_buff(_buff_name:String,_property_name:String,_value:float,_interval:float,_last:float,_recall:FuncRef=null,_caculate_mode:int=1):
+func add_buff(_buff_name:String,_property_name:String,_value:float,_interval:float,_last:float,_caculate_mode:int=1,_on_recall:FuncRef=null,_over_recall:FuncRef=null):
 	if buff.has(_buff_name):
 		var last = buff[_buff_name]["last"]
 		var intervel = buff[_buff_name]["intervel"]
@@ -121,7 +121,8 @@ func add_buff(_buff_name:String,_property_name:String,_value:float,_interval:flo
 			"value":_value,
 			"intervel":_interval,
 			"last":_last,
-			"recall":_recall,
+			"on_recall":_on_recall,
+			"over_recall":_over_recall,
 			"time":timer,
 			"caculate_mode":_caculate_mode
 		}
@@ -138,7 +139,8 @@ func check_buff(delta):
 		var value = buff[key]["value"]
 		var intervel = buff[key]["intervel"]
 		var last = buff[key]["last"]
-		var recall:FuncRef = buff[key]["recall"]
+		var on_recall:FuncRef = buff[key]["on_recall"]
+		var over_recall:FuncRef = buff[key]["over_recall"]
 		var time = buff[key]["time"]
 		var caculate_mode = buff[key]["caculate_mode"]
 		var property = data[property_name]
@@ -146,8 +148,7 @@ func check_buff(delta):
 		if last == -1: #一直存在
 			pass
 		elif last <= 0: #执行完毕，回调函数
-			if recall != null:recall.call_func()
-			remove_buff(key)
+			if over_recall != null:over_recall.call_func()
 			return
 		else:
 			last -= delta
@@ -161,6 +162,7 @@ func check_buff(delta):
 				CACULATE_MODE.SQUARE:
 					property *= value
 					data[property_name] = property
+			if on_recall != null:on_recall.call_func()
 			#设置下一次执行时间
 			buff[key]["time"] = timer + intervel
 		else:
