@@ -5,7 +5,6 @@ export(Resource) var test_res
 export(Resource) var args_res
 
 
-
 func _ready():
 	var action_args = ActionArgs.new()
 	action_args.data["actor"] = self

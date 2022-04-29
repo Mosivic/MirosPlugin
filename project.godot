@@ -34,6 +34,11 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://addons/miros/module/BehaviorTree/Node/BTNode.gd"
 }, {
+"base": "PanelContainer",
+"class": "BackpackBase",
+"language": "GDScript",
+"path": "res://addons/miros/module/Backpack/BackpackBase.gd"
+}, {
 "base": "Node2D",
 "class": "GameTool",
 "language": "GDScript",
@@ -85,6 +90,7 @@ _global_script_class_icons={
 "BTEngine": "",
 "BTGraphResource": "",
 "BTNodeBase": "",
+"BackpackBase": "",
 "GameTool": "",
 "InputAction": "",
 "SavaManager": "",
