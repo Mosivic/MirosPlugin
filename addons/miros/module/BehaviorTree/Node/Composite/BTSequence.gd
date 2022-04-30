@@ -2,7 +2,7 @@ extends "BTCompositeBase.gd"
 
 # 串行执行子结点行为
 # 只有子结点任务全部成功或全部失败时，返回任务结果
-static func _task(e:BTEngine,action_func_type,delta)->int:
+static func _task(e:BTEngine,is_physics:bool,delta:float)->int:
 	var node_name = e.current_node_name
 	var children_node = e.current_node_data["children_node"]
 	var child_count = children_node.size()
@@ -14,8 +14,7 @@ static func _task(e:BTEngine,action_func_type,delta)->int:
 	var is_failed = true
 	for child_node_name in children_node:
 		var action = e.graph_data[child_node_name]["action"]
-		aciton_execute(e,action,action_func_type,delta)
-		action_state = action.get_state()
+		action_state =  action_execute(e,is_physics,delta)
 		if action_state == e.ACTION_STATE.SUCCEED:
 			continue
 		elif action_state == e.ACTION_STATE.FAILED:

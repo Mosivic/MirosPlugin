@@ -5,12 +5,9 @@
 extends "res://addons/miros/module/Action/ActionBase.gd"
 
 
-func _init(name:String="ActionTimer",live_time:float=-1,type=2).(name,live_time,type):
-	pass
 	
-
 func _over_condition()->bool:
-	if currentTime >= actionArgs["time"]:
-		print("Timer:had run time: "+ str(currentTime))
+	if current_time >= action_args["time"]:
+		print("Timer:had run time: "+ str(current_time))
 		return true
 	return false

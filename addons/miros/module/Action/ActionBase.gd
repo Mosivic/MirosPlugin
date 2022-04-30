@@ -1,144 +1,121 @@
-# 
-# 
-#
+# ActionBase
+# By Mosiv 2022.4.30
+
 extends Reference
+class_name ActionBase
 
-enum ACTION_TYPE{
-	NULL,
-	SLOT,
-	LOOP,
-	TIMES,
+const ACTION_STATE = {
+	NULL = 0,
+	RUNNING = 1,
+	SUCCEED = 2,
+	FAILED = 3
 }
+var action_state:int = 0
 
-const ACTION_STATE={
-	NULL = -1,
-	PREPARE = 1,
-	RUNNING = 2,
-	SUCCEED = 3,
-	FAILED = 0,
-}
+var action_name: String
+
+var action_args:Dictionary 
+var action_refs:Reference
+
+var action_process:FuncRef
+var action_physics_process:FuncRef
+
+var action_start_condition:FuncRef 
+var action_over_condition:FuncRef
+var action_continue_condition:FuncRef
+
+var current_time:float = 0
+var execute_count:int = 0
 
 
-var actionName: String
-var actionType = ACTION_TYPE.NULL
+func _init(arg:Dictionary,refs:Reference):
+	self.action_args = arg
+	self.action_refs = refs
+	self.action_process = funcref(self,"_action_process")
+	self.action_physics_process = funcref(self,"_action_physics_process")
+	self.action_start_condition = funcref(self,"_start_condition")
+	self.action_over_condition = funcref(self,"_over_condition")
+	self.action_continue_condition = funcref(self,"_continue_condition")
 
-var actionStartCondition:FuncRef setget set_start_condition
-var actionOverCondition:FuncRef setget set_over_condition
-var actionArgs:Reference setget set_action_args
-var actionLiveTime:float
-var currentTime:float = 0
 
-var actionState = ACTION_STATE.NULL
-var actionStateProcess = ACTION_STATE.NULL
-var actionStatePhysicsProcess = ACTION_STATE.NULL
+# 在执行前准备
+func _before_execute():
+	pass
 
-func _init(name:String,live_time:float=1,type:int=1):
-	build(name,live_time,type)
+# 在执行后收尾
+func _after_execute():
+	pass
 
-# 构建Action
-# @param actionName:动作名称
-# @param actionType:动作类型   
-# @param actionStartCondition:动作开始条件
-# @param actionOverCondition:动作结束条件
-# @param actionFunc:动作函数
-# @param actionArgs:动作参数
-# @param actionLiveTime:动作生命周期
-func build(name:String,live_time:float=1,type:int=1,args:Dictionary={}):
-	self.actionName = name
-	self.actionType = type
-	self.actionStartCondition = funcref(self,"_start_condition")
-	self.actionOverCondition = funcref(self,"_over_condition")
-	self.actionLiveTime = live_time
-	self.actionState = ACTION_STATE.PREPARE
-	self.actionStateProcess = ACTION_STATE.PREPARE
-	self.actionStatePhysicsProcess = ACTION_STATE.PREPARE
-
+# 开始执行的条件
 func _start_condition()->bool:
 	return true
 	
+# 继续执行的条件
+func _continue_condition()->bool:
+	return true
+
+# 结束执行的条件	
 func _over_condition()->bool:
 	return true
 
+# 执行动作 物理帧
 func _action_physics_process(delta):
 	return
 
+# 执行动作 正常帧率
 func _action_process(delta):
 	pass
 
-func get_state()->int:
-	if actionStateProcess * actionStatePhysicsProcess == 9:
-		return ACTION_STATE.SUCCEED
-	elif actionStateProcess * actionStatePhysicsProcess == 0:
-		return ACTION_STATE.FAILED
-	elif actionStateProcess * actionStatePhysicsProcess == 1:
-		return ACTION_STATE.PREPARE
-	else:
-		return ACTION_STATE.RUNNING
+func Execute_before():
+	_before_execute()
 
-func execute_physics_process(delta):
-	actionStatePhysicsProcess = _execute(delta,funcref(self,"_action_physics_process"),actionStatePhysicsProcess,true)
+func Execute_after():
+	_after_execute()
+
+# 执行
+func Execute(delta:float,is_physics:bool):
+	match is_physics:
+		true:
+			action_physics_process.call_func(delta)
+		false:
+			current_time += delta 
+			action_process.call_func(delta)
+	execute_count += 1
 
 
-func execute_process(delta):
-	actionStateProcess = _execute(delta,funcref(self,"_action_process"),actionStateProcess,false)
+func Is_can_execute()->bool:
+	return _start_condition()
+
+func Is_over_execute()->bool:
+	return _over_condition()
+
+func Is_continue_execute()->bool:
+	return _continue_condition()
+
+func Set_action_args(v:Dictionary):
+	action_args = v
+
+func Set_action_refs(v:Reference):
+	action_refs = v
+
+func Set_start_condition(condition:FuncRef):
+	action_start_condition = condition
+
+func Set_over_condition(condition:FuncRef):
+	action_over_condition = condition
 	
+func Set_continue_condition(condition:FuncRef):
+	action_continue_condition = condition
 
-# 执行Action,返回Action状态
-func _execute(delta,_actionFunc:FuncRef,state,is_physics:bool)->int:
-	# 如果动作生命时长结束，则结束, actionLiveTime初始值设置为-1时生命时长无限
-	# 在_process中判断
-	if !is_physics:
-		currentTime = delta + currentTime
-		if actionLiveTime == -1:
-			pass
-		else:
-			if currentTime >= actionLiveTime: 
-				state = ACTION_STATE.FAILED
-	# 如果动作执行完毕，则结束
-	if state == ACTION_STATE.SUCCEED or state == ACTION_STATE.FAILED:
-		return state
+func Reset():
+	action_state = 0
+	current_time = 0
+	execute_count = 0
 
-	if actionType == ACTION_TYPE.SLOT: # 单次Action
-		state = ACTION_STATE.RUNNING
-		_actionFunc.call_func(delta)
-		state = ACTION_STATE.SUCCEED
-	elif actionType == ACTION_TYPE.LOOP: # 循环Action
-		if state == ACTION_STATE.PREPARE: # 如果准备执行，则执行
-			if actionStartCondition == null: # 如果没有设置开始条件，则直接执行
-				state = ACTION_STATE.RUNNING
-			else:
-				if actionStartCondition.call_func() == true: # 如果开始条件成立，则执行
-					state = ACTION_STATE.RUNNING 
-				else:
-					state = ACTION_STATE.PREPARE
-		elif state == ACTION_STATE.RUNNING: # 如果正在执行，则继续执行
-			if actionOverCondition == null: # 如果没有设置结束条件，则直接结束
-				_actionFunc.call_func(delta)
-				state = ACTION_STATE.SUCCEED
-			else: 
-				if actionOverCondition.call_func() == true: # 如果结束条件成立，则结束
-					state = ACTION_STATE.SUCCEED
+func Set_state(v):
+	action_state = v
 
-				else: # 如果结束条件不成立，则继续执行
-					_actionFunc.call_func(delta)
-					state = ACTION_STATE.RUNNING
-	# 返回动作状态
-	return state
+func Get_state():
+	return action_state
 
-
-
-func set_action_args(v:Reference):
-	actionArgs = v
-
-func set_start_condition(condition:FuncRef):
-	actionStartCondition = condition
-
-func set_over_condition(condition:FuncRef):
-	actionOverCondition = condition
-
-func reset():
-	currentTime = 0
-	actionState = ACTION_STATE.PREPARE
-	actionStateProcess = ACTION_STATE.PREPARE
-	actionStatePhysicsProcess = ACTION_STATE.PREPARE
 

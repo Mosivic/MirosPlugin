@@ -10,14 +10,19 @@ config_version=4
 
 _global_script_classes=[ {
 "base": "Reference",
-"class": "ActionArgs",
+"class": "ActionBase",
 "language": "GDScript",
-"path": "res://addons/miros/module/Action/ActionArgs.gd"
+"path": "res://addons/miros/module/Action/ActionBase.gd"
 }, {
 "base": "Node",
 "class": "ActionManager",
 "language": "GDScript",
 "path": "res://addons/miros/module/Action/ActionManager.gd"
+}, {
+"base": "Reference",
+"class": "ActionRefs",
+"language": "GDScript",
+"path": "res://addons/miros/module/Action/ActionRefs.gd"
 }, {
 "base": "Node",
 "class": "BTEngine",
@@ -85,8 +90,9 @@ _global_script_classes=[ {
 "path": "res://addons/miros/module/Unitool/UI/UIBuilder.gd"
 } ]
 _global_script_class_icons={
-"ActionArgs": "",
+"ActionBase": "",
 "ActionManager": "",
+"ActionRefs": "",
 "BTEngine": "",
 "BTGraphResource": "",
 "BTNodeBase": "",

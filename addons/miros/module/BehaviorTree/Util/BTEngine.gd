@@ -4,13 +4,6 @@ class_name BTEngine
 const BTClassBD = preload("res://addons/miros/module/BehaviorTree/Util/BTClassDB.gd")
 const ActionBD = preload("res://addons/miros/module/Action/ActionBD.gd")
 
-const ACTION_STATE={
-	NULL = -1,
-	PREPARE = 1,
-	RUNNING = 2,
-	SUCCEED = 3,
-	FAILED = 0,
-}
 
 const TASK_STATE={
 	NULL=0,
@@ -19,10 +12,11 @@ const TASK_STATE={
 	FAILED = 3,
 }
 
-const ACTION_FUNC_TYPE = {
+const ACTION_STATE = {
 	NULL = 0,
-	PROCESS = 1,
-	PHYSICS_PROCESS = 2,
+	RUNNING = 1,
+	SUCCEED = 2,
+	FAILED = 3
 }
 
 var current_node
@@ -37,7 +31,7 @@ var actor:Node
 # Graph结点数据
 var graph_data:Dictionary setget set_graph_data
 # 行为参数
-var action_args:Reference
+var action_refs:Reference
 # 是否激活
 var is_active:bool=false setget set_active
 
@@ -48,8 +42,8 @@ var task_state:int  = TASK_STATE.NULL
 var is_task_process:bool = false
 var is_task_physics_process:bool = false
 
-func _init(actor:Node,graph_data:Dictionary,action_args:Reference):
-	self.action_args = action_args
+func _init(actor:Node,graph_data:Dictionary,_action_refs:Reference):
+	self.action_refs = _action_refs
 	self.graph_data = graph_data
 	self.actor = actor
 	self.name = "BTEngine"
@@ -68,12 +62,11 @@ func _physics_process(delta):
 		run_physics_process(delta)
 
 
-
 func run_process(delta):
-	task_state = current_node._task(self,ACTION_FUNC_TYPE.PROCESS,delta)
+	task_state = current_node._task(self,false,delta)
 
 func run_physics_process(delta):
-	task_state = current_node._task(self,ACTION_FUNC_TYPE.PHYSICS_PROCESS,delta)
+	task_state = current_node._task(self,true,delta)
 
 
 func state_check():
@@ -115,8 +108,8 @@ func switch_next_task(next_node_name:String):
 func generate_action():
 	for key in graph_data.keys():
 		var action_name = graph_data[key]["action_name"]
-		var action = ActionBD.Actions[action_name].new()
-		action.set_action_args(action_args)
+		var action_args = graph_data[key]["action_args"]
+		var action = ActionBD.Actions[action_name].new(action_args,action_refs)
 		graph_data[key]["action"] = action
 
 
@@ -140,14 +133,15 @@ func set_current_node(node_name:String):
 	current_node = load(BTClassBD.BTNodeClass[k])
 	current_node_action = current_node_data["action"]
 	#action重置, 当前结点与其子结点, state重置
-	current_node_action.reset()
+	current_node_action.Reset()
 	for child_node_name in current_node_data["children_node"]:
-		graph_data[child_node_name]["action"].reset()
+		graph_data[child_node_name]["action"].Reset()
 	task_state = TASK_STATE.NULL
 
 
 func reset_task_action(node_data):
-	node_data["action"].reset() 
+	node_data["action"].Reset() 
+
 
 func set_graph_data(_graph_data:Dictionary):
 	graph_data = _graph_data
@@ -156,6 +150,7 @@ func set_graph_data(_graph_data:Dictionary):
 func set_active(v:bool):
 	is_active = v
 	
+
 func get_decorator_script(_name:String):
 	var decorator = load(BTClassBD.BTDecoratorType[_name])
 	return decorator
