@@ -52,6 +52,7 @@ func _pack_node_info(node)->Dictionary:
 		"right_nodes_name":node.right_nodes_name,
 		"offset":node.offset,
 		"action_name":node.action_name,
+		"action_args":node.action_args,
 		"decorators":node.decorators
 	}
 	return data
@@ -76,8 +77,10 @@ func _unpack_node_info(node,info:Dictionary):
 		info.offset = Vector2.ZERO
 	if !info.has("action_name"):
 		info.action_name = "ActionEmpty"
+	if !info.has("action_args"):
+		info.action_args = {}
 	if !info.has("decorators"):
-		info.decorators = {}
+		info.decorators = []
 	node.name = info.name
 	node.hint = info.hint
 	node.node_class = info.node_class
@@ -87,6 +90,7 @@ func _unpack_node_info(node,info:Dictionary):
 	node.right_nodes_name = info.right_nodes_name
 	node.offset = info.offset
 	node.action_name = info.action_name
+	node.action_args = info.action_args
 	node.decorators = info.decorators
 
 
@@ -138,15 +142,21 @@ func _save_data_check()->bool:
 # 结点装配器加工结点
 # 结点UI生成
 func _create_node(info:Dictionary)->Node:
-	var n = bt_gragh_node.instance()
-	_unpack_node_info(n,info)
-	n.graph_core = self
-	n.title = n.name
-	n = BTGraphNodeAssembler.assemble_node(n)
-	for key in n.decorators.keys():
-		ui._build_decorator(n,key,n.decorators[key])
-	graph.add_child(n)
-	return n
+	var node = bt_gragh_node.instance()
+	_unpack_node_info(node,info)
+	node.graph_core = self
+	node.title = node.name
+	node = BTGraphNodeAssembler.assemble_node(node)
+
+	# node UI生成
+	ui._build_decorators_from_data(node)
+	ui._build_action_args_from_data(node)
+	
+	# node UI事件绑定
+	node.find_node("AddBtn").connect("button_down",ui,"_on_action_arg_add_button_down",[node])
+	
+	graph.add_child(node)
+	return node
 
 
 # Delete appoint node / 删除给定结点
@@ -170,8 +180,8 @@ func _set_parent_to_child(node):
 func _create_child_graph(parent:String):
 	_hide_graph()
 	graph.clear_connections()
-	var n = _get_node_by_name(parent)
-	current_layer = n.name
+	var node = _get_node_by_name(parent)
+	current_layer = node.name
 	ui._set_path()
 
 # 销毁子图

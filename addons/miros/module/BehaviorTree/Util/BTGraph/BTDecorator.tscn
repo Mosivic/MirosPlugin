@@ -1,7 +1,7 @@
 [gd_scene format=2]
 
-[node name="Decorater" type="HBoxContainer"]
-margin_right = 154.0
+[node name="BTDecorater" type="HBoxContainer"]
+margin_right = 76.0
 margin_bottom = 24.0
 
 [node name="Name" type="Label" parent="."]
@@ -11,17 +11,9 @@ rect_min_size = Vector2( 48, 24 )
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="Arg" type="SpinBox" parent="."]
-margin_left = 52.0
-margin_right = 126.0
-margin_bottom = 24.0
-rect_min_size = Vector2( 24, 24 )
-size_flags_horizontal = 3
-size_flags_vertical = 3
-
 [node name="Delete" type="Button" parent="."]
-margin_left = 130.0
-margin_right = 154.0
+margin_left = 52.0
+margin_right = 76.0
 margin_bottom = 24.0
 rect_min_size = Vector2( 24, 24 )
 size_flags_horizontal = 3

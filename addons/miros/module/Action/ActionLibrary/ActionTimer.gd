@@ -4,7 +4,8 @@
 ###
 extends "res://addons/miros/module/Action/ActionBase.gd"
 
-
+func _init(arg:Dictionary,refs:Reference).(arg,refs):
+	action_name = "Timer"
 	
 func _over_condition()->bool:
 	if current_time >= action_args["time"]:

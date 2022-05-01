@@ -16,24 +16,23 @@ var node_class:String
 
 var action_name:String 
 
+var action_args:Dictionary
+
 var state:String
 
 var parent_node:String
 
 var children_node:Array
 
-var decorators:Dictionary
+var decorators:Array
 
 
 func _ready():
 	get_node("VBoxContainer/Hint/Content").text = hint
-	get_node("VBoxContainer/Action/Content").text = action_name
+	get_node("VBoxContainer/Action/Name/Content").text = action_name
 	get_node("VBoxContainer/State/Content").text = state
 
 
-func _on_GraphNode_resize_request(new_minsize):
-	rect_size = new_minsize
-	
 # 添加左节点集
 func add_left_node(node):
 	if  !left_nodes.has(node) and node != null:
@@ -77,8 +76,8 @@ func remove_child_node(_name:String):
 func has_child_node(_name:String)->bool:
 	return children_node.has(_name)
 
-func add_decorator(_name:String,arg:int):
-	decorators[_name] = arg
+func add_decorator(_name:String):
+	decorators.append(_name)
 
 func remove_decorator(_name:String):
 	decorators.erase(_name)
@@ -92,5 +91,12 @@ func set_parent_node(_name:String):
 func clear_children_node():
 	children_node.clear()
 
+
+func _on_GraphNode_resize_request(new_minsize):
+	rect_size = new_minsize
+
 func _on_Content_text_changed(new_text):
 	hint = new_text
+
+
+	

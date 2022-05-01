@@ -6,7 +6,8 @@ const ActionBD = preload("res://addons/miros/module/Action/ActionBD.gd")
 # 行为树类数据库
 const BTClassBD = preload("res://addons/miros/module/BehaviorTree/Util/BTClassDB.gd")
 
-const decorator_instance = preload("res://addons/miros/module/BehaviorTree/Util/BTGraph/Decorator.tscn")
+const BTActionArg =  preload("res://addons/miros/module/BehaviorTree/Util/BTGraph/BTActionArg.tscn")
+const BTDecorator = preload("res://addons/miros/module/BehaviorTree/Util/BTGraph/BTDecorator.tscn")
 
 onready var context_box = $Context/VBoxContainer
 onready var context = $Context
@@ -210,6 +211,38 @@ func _enter_child_graph(b:Button):
 	_hide_context()
 	_set_path()
 
+#------------------------------------------------------------------------------#
+# Action Arg
+
+# node UI 事件
+func _on_action_arg_add_button_down(node):
+	var input_key_node = node.get_node("VBoxContainer/Action/Args/AddActionArg/Key")
+	var input_value_node = node.get_node("VBoxContainer/Action/Args/AddActionArg/Value")
+	_build_action_arg(node,input_key_node.text,input_value_node.text)
+	input_key_node.text = ""
+	input_value_node.text = ""
+
+func _build_action_arg(node,key,value):
+	var bt_action_arg = BTActionArg.instance()
+	node.action_args[key] = value
+	node.get_node("VBoxContainer/Action/Args").add_child(bt_action_arg)
+	bt_action_arg.get_node("Key").text = key
+	bt_action_arg.get_node("Value").text =value
+	bt_action_arg.get_node("DelBtn").connect("button_down",self,"_on_action_arg_del_button_down",[bt_action_arg])
+
+func _build_action_args_from_data(node):
+	var action_args = node.action_args
+	for key in action_args.keys():
+		var bt_action_arg = BTActionArg.instance()
+		node.find_node("Args").add_child(bt_action_arg)
+		bt_action_arg.get_node("Key").text = key
+		bt_action_arg.get_node("Value").text = action_args[key]
+		bt_action_arg.get_node("DelBtn").connect("button_down",self,"_on_action_arg_del_button_down",[bt_action_arg])
+
+func _on_action_arg_del_button_down(node):
+	var parent = node.get_parent()
+	parent.remove_child(node)
+	node.queue_free()
 
 #------------------------------------------------------------------------------#
 #------------------------------------------------------------------------------#
@@ -230,12 +263,17 @@ func _add_decoretor_context(b:Button):
 	_show_context()
 
 # 创建装饰
-func _build_decorator(node,_name,_arg):
-	var decorator = decorator_instance.instance()
+func _build_decorators_from_data(node):
+	var decorators = node.decorators
+	for _name in decorators:
+		_build_decorator(node,_name)
+
+# 创建装饰
+func _build_decorator(node,_name:String):
+	var decorator = BTDecorator.instance()
 	decorator.get_node("Name").text = _name
 	decorator.get_node("Delete").connect("button_down",self,"_on_delete_decorator_button_pressed",[decorator])
-	decorator.get_node("Arg").connect("changed",self,"on_decorator_arg_changed",[decorator])
-	node.add_decorator(_name,_arg)
+	node.add_decorator(_name)
 	node.find_node("Decorators").add_child(decorator)
 
 # 添加装饰按钮按下
@@ -246,7 +284,7 @@ func _on_add_decoretor_button_pressed(b:Button):
 		if node.has_decorator(decorator_name):
 			print("装饰已存在，不可反复添加")
 			return
-		_build_decorator(node,decorator_name,0)
+		_build_decorator(node,decorator_name)
 	_hide_context()
 
 # 删除装饰按钮按下
@@ -255,13 +293,6 @@ func _on_delete_decorator_button_pressed(decorater:Control):
 	node.find_node("Decorators").remove_child(decorater)
 	node.remove_decorator(decorater.get_node("Name").text)
 	decorater.queue_free()
-
-# 装饰参数发生改变
-func on_decorator_arg_changed(decorater):
-	var _name = decorater.get_node("Name").text
-	var arg = decorater.get_node("Arg").text
-	var node = decorater.get_parent().get_parent().get_parent()
-	node._add_decoretor(_name,arg)
 
 #------------------------------------------------------------------------------#
 #------------------------------------------------------------------------------#

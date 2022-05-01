@@ -1,4 +1,4 @@
 extends Reference
-class_name ActionRefs
+class_name Blackboard
 
 var data:Dictionary = {}

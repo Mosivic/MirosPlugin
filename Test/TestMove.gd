@@ -2,19 +2,18 @@ extends KinematicBody2D
 
 
 export(Resource) var test_res
-export(Resource) var args_res
 
 
 func _ready():
-	var action_args = ActionArgs.new()
-	action_args.data["actor"] = self
-	var engine = load("res://addons/miros/module/BehaviorTree/Util/BTEngine.gd").new(self,test_res.data,action_args)
+	var action_refs = Blackboard.new()
+	action_refs.data["actor"] = self
+	var engine = load("res://addons/miros/module/BehaviorTree/Util/BTEngine.gd").new(test_res.data,action_refs)
 	engine.set_active(true)
 
-	add_hp()
-	add_hp_zero_trigger()
-	add_buff_poison()
-	add_buff_hp_mutiply()
+#	add_hp()
+#	add_hp_zero_trigger()
+#	add_buff_poison()
+#	add_buff_hp_mutiply()
 	
 #How to use OneData
 # 添加一个血量降为0的触发器，触发hp_zero_call()函数

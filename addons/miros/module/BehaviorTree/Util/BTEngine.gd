@@ -5,56 +5,32 @@ const BTClassBD = preload("res://addons/miros/module/BehaviorTree/Util/BTClassDB
 const ActionBD = preload("res://addons/miros/module/Action/ActionBD.gd")
 
 
-const TASK_STATE={
-	NULL=0,
-	RUNNING = 1,
-	SUCCEED = 2,
-	FAILED = 3,
-}
 
-const ACTION_STATE = {
-	NULL = 0,
-	RUNNING = 1,
-	SUCCEED = 2,
-	FAILED = 3
-}
-
-var current_node
-var current_node_name:String
 var current_node_data:Dictionary
-var current_node_action
-
-var back_node_name_road:Array
-
+var current_task_state:int
+var road:Array
 # 拥有者
 var actor:Node
-# Graph结点数据
-var graph_data:Dictionary setget set_graph_data
+# 引擎结点数据
+var nodes_data:Dictionary
 # 行为参数
-var action_refs:Reference
+var blackboard:Reference
 # 是否激活
 var is_active:bool=false setget set_active
 
 
 
-var task_state:int  = TASK_STATE.NULL
-
-var is_task_process:bool = false
-var is_task_physics_process:bool = false
-
-func _init(actor:Node,graph_data:Dictionary,_action_refs:Reference):
-	self.action_refs = _action_refs
-	self.graph_data = graph_data
-	self.actor = actor
+func _init(graph_data:Dictionary,_blackboard:Reference):
+	self.blackboard = _blackboard
+	self.actor = blackboard.data["actor"]
 	self.name = "BTEngine"
+	init_engine_data(graph_data)
 	actor.add_child(self)
-	generate_action() #生成action
-	set_current_node_root() #设置当前结点为Root
 
 
 func _process(delta):
 	if is_active :
-		state_check()
+		task_state_check()
 		run_process(delta)
 
 func _physics_process(delta):
@@ -63,95 +39,89 @@ func _physics_process(delta):
 
 
 func run_process(delta):
-	task_state = current_node._task(self,false,delta)
+	current_task_state = current_node_data["node"]._task(self,false,delta)
 
 func run_physics_process(delta):
-	task_state = current_node._task(self,true,delta)
+	current_task_state =  current_node_data["node"]._task(self,true,delta)
 
 
-func state_check():
+func task_state_check():
+	match current_task_state:
+		STATE.TASK_STATE.NULL:
+			pass
+		STATE.TASK_STATE.RUNNING:
+			pass
+		STATE.TASK_STATE.SUCCEED:
+			print("BTEngine: "+current_node_data["name"]+" is succeed.")
+			switch_node(current_task_state)
+		STATE.TASK_STATE.FAILED:
+			print("BTEngine: "+current_node_data["name"]+" is failed.")
+			switch_node(current_task_state)
+
+#
+func switch_node(task_state:int):
+	var to_node_name:String
 	match task_state:
-		TASK_STATE.NULL:
-			pass
-		TASK_STATE.RUNNING:
-			pass
-		TASK_STATE.SUCCEED:
-			print("BTEngine: "+current_node_name+" is succeed.")
-			var next_name = current_node._next(self,TASK_STATE.SUCCEED)
-			switch_next_task(next_name)
-		TASK_STATE.FAILED:
-			print("BTEngine: "+current_node_name+" is failed.")
-			var next_name = current_node._next(self,TASK_STATE.FAILED)
-			switch_next_task(next_name)
+		STATE.TASK_STATE.SUCCEED:
+			to_node_name = current_node_data["node"].Next(self)
+		STATE.TASK_STATE.FAILED:
+			to_node_name = current_node_data["node"].Last(self)
+	if to_node_name == "":
+		set_active(false)
+	else:
+		road.append(current_node_data["name"])
+		current_node_data = nodes_data[to_node_name]
+		reset_node(current_node_data)
+		current_task_state = STATE.TASK_STATE.NULL
 
-# 
-func switch_next_task(next_node_name:String):
-	match next_node_name:
-		"":
-			print("BTEngine:Err:next_node_name is null string")
-		"keep":
-			pass
-		"back":
-			if back_node_name_road.size() == 0:
-				set_active(false)
-			else:
-				var back_node_name = back_node_name_road.pop_back()
-				set_current_node(back_node_name)
-		"over":
-			set_active(false)
-		_:
-			back_node_name_road.append(current_node_name)
-			set_current_node(next_node_name)
+
+
+func reset_node(node_data:Dictionary):
+	node_data["action"].Reset()
+	for child_node_name in node_data["children_node"]:
+		nodes_data[child_node_name]["action"].Reset()
+
 
 # 生成action,重建graph_data
 # 给原有的data上添加实例化的action引用
-func generate_action():
+func init_engine_data(graph_data:Dictionary):
 	for key in graph_data.keys():
 		var action_name = graph_data[key]["action_name"]
 		var action_args = graph_data[key]["action_args"]
-		var action = ActionBD.Actions[action_name].new(action_args,action_refs)
+		var node_class = graph_data[key]["node_class"]
+		var decorators_type = graph_data[key]["decorators"]
+		# 添加 action引用
+		var action = ActionBD.Actions[action_name].new(action_args,blackboard)
 		graph_data[key]["action"] = action
-
-
-# 设置当前结点为Root
-func set_current_node_root():
-	for key in graph_data.keys():
-		if graph_data[key]["node_class"] == "Root":
-			var k = graph_data[key]["node_class"]
-			current_node = load(BTClassBD.BTNodeClass[k])
-			current_node_name = graph_data[key]["name"] 
+		# 添加 node引用
+		var node = get_node_script(node_class)
+		graph_data[key]["node"] = node
+		# 添加 decorators引用
+		var decorators:Array
+		for decorator_type in decorators_type:
+			var decorator = get_decorator_script(decorator_type)
+			decorators.append(decorator)
+			
+		if node_class == "Root":
 			current_node_data = graph_data[key]
-			current_node_action = graph_data[key]["action"]
-			return
-	print_debug("BTEngine:graph_data has not root node")
-
-# 切换当前结点
-func set_current_node(node_name:String):
-	current_node_data = graph_data[node_name]
-	current_node_name = node_name
-	var k = current_node_data["node_class"]
-	current_node = load(BTClassBD.BTNodeClass[k])
-	current_node_action = current_node_data["action"]
-	#action重置, 当前结点与其子结点, state重置
-	current_node_action.Reset()
-	for child_node_name in current_node_data["children_node"]:
-		graph_data[child_node_name]["action"].Reset()
-	task_state = TASK_STATE.NULL
-
+	nodes_data = graph_data
+	
 
 func reset_task_action(node_data):
 	node_data["action"].Reset() 
 
 
-func set_graph_data(_graph_data:Dictionary):
-	graph_data = _graph_data
-
-
 func set_active(v:bool):
 	is_active = v
-	
 
-func get_decorator_script(_name:String):
-	var decorator = load(BTClassBD.BTDecoratorType[_name])
+func get_node_script(_class:String):
+	var node = load(BTClassBD.BTNodeClass[_class])
+	return node
+
+func get_decorator_script(_type:String):
+	var decorator = load(BTClassBD.BTDecoratorType[_type])
 	return decorator
 
+func Get_node_data_by_name(_name):
+	return nodes_data[_name]
+	

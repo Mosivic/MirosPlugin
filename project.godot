@@ -19,11 +19,6 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://addons/miros/module/Action/ActionManager.gd"
 }, {
-"base": "Reference",
-"class": "ActionRefs",
-"language": "GDScript",
-"path": "res://addons/miros/module/Action/ActionRefs.gd"
-}, {
 "base": "Node",
 "class": "BTEngine",
 "language": "GDScript",
@@ -44,6 +39,11 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://addons/miros/module/Backpack/BackpackBase.gd"
 }, {
+"base": "Reference",
+"class": "Blackboard",
+"language": "GDScript",
+"path": "res://addons/miros/module/Unitool/Blackboard.gd"
+}, {
 "base": "Node2D",
 "class": "GameTool",
 "language": "GDScript",
@@ -53,6 +53,11 @@ _global_script_classes=[ {
 "class": "InputAction",
 "language": "GDScript",
 "path": "res://addons/miros/module/Unitool/Input/InputAction.gd"
+}, {
+"base": "Reference",
+"class": "STATE",
+"language": "GDScript",
+"path": "res://addons/miros/module/Unitool/STATE.gd"
 }, {
 "base": "Node",
 "class": "SavaManager",
@@ -92,13 +97,14 @@ _global_script_classes=[ {
 _global_script_class_icons={
 "ActionBase": "",
 "ActionManager": "",
-"ActionRefs": "",
 "BTEngine": "",
 "BTGraphResource": "",
 "BTNodeBase": "",
 "BackpackBase": "",
+"Blackboard": "",
 "GameTool": "",
 "InputAction": "",
+"STATE": "",
 "SavaManager": "",
 "SoundManager": "",
 "Tilemap": "",

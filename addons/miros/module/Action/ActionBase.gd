@@ -4,17 +4,12 @@
 extends Reference
 class_name ActionBase
 
-const ACTION_STATE = {
-	NULL = 0,
-	RUNNING = 1,
-	SUCCEED = 2,
-	FAILED = 3
-}
 var action_state:int = 0
 
 var action_name: String
 
 var action_args:Dictionary 
+var action_temp:Dictionary
 var action_refs:Reference
 
 var action_process:FuncRef
@@ -107,7 +102,14 @@ func Set_over_condition(condition:FuncRef):
 func Set_continue_condition(condition:FuncRef):
 	action_continue_condition = condition
 
+func Set_process(process:FuncRef):
+	action_process = process
+
+func Set_physics_process(physics_process:FuncRef):
+	action_physics_process = physics_process 
+
 func Reset():
+	action_temp.clear()
 	action_state = 0
 	current_time = 0
 	execute_count = 0
