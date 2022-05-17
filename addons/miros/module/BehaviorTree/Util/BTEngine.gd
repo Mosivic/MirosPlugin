@@ -39,10 +39,10 @@ func _physics_process(delta):
 
 
 func run_process(delta):
-	current_task_state = current_node_data["node"]._task(self,false,delta)
+	current_task_state = current_node_data["node"].Run(self,false,delta)
 
 func run_physics_process(delta):
-	current_task_state =  current_node_data["node"]._task(self,true,delta)
+	current_task_state =  current_node_data["node"].Run(self,true,delta)
 
 
 func task_state_check():

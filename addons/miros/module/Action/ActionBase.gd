@@ -79,13 +79,13 @@ func Execute(delta:float,is_physics:bool):
 
 
 func Is_can_execute()->bool:
-	return _start_condition()
+	return action_start_condition.call_func()
 
 func Is_over_execute()->bool:
-	return _over_condition()
+	return action_over_condition.call_func()
 
 func Is_continue_execute()->bool:
-	return _continue_condition()
+	return action_continue_condition.call_func()
 
 func Set_action_args(v:Dictionary):
 	action_args = v

@@ -34,8 +34,6 @@ func move(delta):
 
 # 在执行前准备
 func _before_execute():
-	print("TopDownMove before execute")
+	print(action_args["111"])
 
-# 在执行后收尾
-func _after_execute():
-	print("TopDownMove after execute")
+
