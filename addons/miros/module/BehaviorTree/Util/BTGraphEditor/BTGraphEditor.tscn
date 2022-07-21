@@ -1,9 +1,9 @@
 [gd_scene load_steps=3 format=2]
 
-[ext_resource path="res://addons/miros/module/BehaviorTree/Util/BTGraph/BTGraphCore.gd" type="Script" id=1]
-[ext_resource path="res://addons/miros/module/BehaviorTree/Util/BTGraph/BTGraphUI.gd" type="Script" id=2]
+[ext_resource path="res://addons/miros/module/BehaviorTree/Util/BTGraphEditor/BTGraphEditor.gd" type="Script" id=1]
+[ext_resource path="res://addons/miros/module/BehaviorTree/Util/BTGraphEditor/BTGraphUI.gd" type="Script" id=2]
 
-[node name="BTGraph" type="Control"]
+[node name="BTGraphEditor" type="Control"]
 anchor_right = 1.0
 anchor_bottom = 1.0
 script = ExtResource( 1 )
@@ -44,7 +44,7 @@ margin_top = -65.5001
 margin_right = 299.0
 margin_bottom = 218.5
 rect_min_size = Vector2( 250, 87.5 )
-window_title = "Open a File or Directory"
+window_title = "打开文件或目录"
 mode = 3
 
 [node name="Path" type="HBoxContainer" parent="UI"]

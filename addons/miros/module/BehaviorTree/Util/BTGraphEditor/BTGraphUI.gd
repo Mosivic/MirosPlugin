@@ -1,6 +1,9 @@
 tool
 extends Control
 
+
+signal ui_changed
+
 # 动作数据库
 const ActionBD = preload("res://addons/miros/module/Action/ActionBD.gd")
 # 行为树类数据库
@@ -35,7 +38,7 @@ func _input(event):
 	if event.is_pressed() :
 		if event.has_meta("button_index"):
 			print("hai")
-		if  event.button_index == BUTTON_RIGHT:
+		if event is InputEventMouseButton and event.button_index == BUTTON_RIGHT:
 			if graph_core.selected_node == null:
 				_build_main_context()
 			else:
@@ -301,6 +304,7 @@ func _on_delete_decorator_button_pressed(decorater:Control):
 # 建立结点树
 # 根据图中结点建立
 func _build_tree():
+	tree.clear()
 	var root = tree.create_item()
 	root.set_text(0,"BTREE")
 	root.set_text(1,"结点图")

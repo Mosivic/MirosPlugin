@@ -1,0 +1,16 @@
+[gd_resource type="Resource" load_steps=2 format=2]
+
+[ext_resource path="res://addons/miros/core/ModuleSettingResource.gd" type="Script" id=1]
+
+[resource]
+script = ExtResource( 1 )
+name = "SuperTag"
+core = "res://addons/miros/module/SuperTag/TagCore.gd"
+is_open = true
+inspector_plugin = "res://addons/miros/module/SuperTag/TagInspectorPlugin.gd"
+setting_panel = "res://addons/miros/module/SuperTag/UI/TagSettingInterface.tscn"
+version = "0.02"
+extra = {
+"tag_resource_path": "res://addons/miros/module/SuperTag/Test/test.tres"
+}
+introdution = "超级标签模块, 用于标记对象, 实现通过标签管理对象."

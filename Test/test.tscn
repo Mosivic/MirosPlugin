@@ -22,7 +22,3 @@ shape = SubResource( 1 )
 texture = ExtResource( 3 )
 
 [node name="OneData" parent="KinematicBody2D" instance=ExtResource( 1 )]
-custom_property = {
-"attack": 4,
-"hp": 100.0
-}

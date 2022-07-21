@@ -1,6 +1,7 @@
 tool
 extends Control
 
+
 onready var file_dialog:FileDialog = get_node("./UI/FileDialog")
 # 行为树Graph
 onready var graph = $GraphEdit
@@ -11,9 +12,9 @@ const ActionBD = preload("res://addons/miros/module/Action/ActionBD.gd")
 # 行为树类数据库
 const BTClassBD = preload("res://addons/miros/module/BehaviorTree/Util/BTClassDB.gd")
 #
-const BTGraphNodeAssembler = preload("res://addons/miros/module/BehaviorTree/Util/BTGraph/BTGraphNodoAssembler.gd")
+const BTGraphNodeAssembler = preload("res://addons/miros/module/BehaviorTree/Util/BTGraphEditor/BTGraphNodoAssembler.gd")
 # 行为树节点
-var bt_gragh_node = preload("res://addons/miros/module/BehaviorTree/Util/BTGraph/BTGraphNode.tscn")
+var bt_gragh_node = preload("res://addons/miros/module/BehaviorTree/Util/BTGraphEditor/BTGraphNode.tscn")
 # 插件类引用
 var _plugin:EditorPlugin
 # Graph数据，key为node名称，value为node信息
@@ -125,7 +126,7 @@ func _load_graph_from_data():
 		for r in node_data["right_nodes_name"]:
 			_on_GraphEdit_connection_request(node_name,0,r,0)
 	_jump_graph(parent_node)
-	ui._build_tree()
+	
 
 # 保存数据检查
 # 根图和子图中只能存在一个Root结点
@@ -156,6 +157,7 @@ func _create_node(info:Dictionary)->Node:
 	node.find_node("AddBtn").connect("button_down",ui,"_on_action_arg_add_button_down",[node])
 	
 	graph.add_child(node)
+	ui._build_tree()
 	return node
 
 
