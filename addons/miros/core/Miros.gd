@@ -25,17 +25,16 @@ func start(_plugin:EditorPlugin):
 		get_node("Tabs/Center/VBoxContainer").add_child(module_item)
 		
 		if setting.is_open:
-			module_item.get_node("Switch").pressed = true
-			create_module(setting)
+			module_item.get_node("Switch").pressed = true #注意, 该代码会调动Swith的绑定事件"on_ModuleSwitch_toggled"
 
 
 # 结束所有模块,销毁自身
 func over():
 	var modules = get_node("Modules").get_children()
-	for module in modules:
-		module.over()
-		module.save()
-		module.queue_free()
+	for core in modules:
+		core.over()
+		core.save()
+		core.queue_free()
 	queue_free()
 
 func create_module(setting:ModuleSettingResource):
@@ -49,12 +48,12 @@ func create_module(setting:ModuleSettingResource):
 
 func destory_module(setting:ModuleSettingResource):
 	setting.is_open =false
-	var module = get_node("Modules").find_node(setting.name)
-	if module:
-		module.over()
-		module.save()
-		module.queue_free()
-	
+	var core = get_node("Modules").find_node(setting.name)
+	if core:
+		core.over()
+		core.save()
+		core.queue_free()
+
 #模块开关按钮按下
 func on_ModuleSwitch_toggled(button_pressed,setting:ModuleSettingResource):
 	if button_pressed:
@@ -63,7 +62,7 @@ func on_ModuleSwitch_toggled(button_pressed,setting:ModuleSettingResource):
 		destory_module(setting)
 		
 
-#模块设置按钮按下
+#模块设置按钮按下,创建并打开模块设置页面
 func on_ModuleSetting_button_down(setting:ModuleSettingResource):
 	if setting.setting_panel == "":return
 	

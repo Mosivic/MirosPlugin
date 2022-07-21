@@ -4,6 +4,6 @@
 
 [resource]
 script = ExtResource( 1 )
-Tags = [ "NULL", "Player", "Hello" ]
-NodesTag = {
+tags = {
+"NULL": "res://addons/miros/module/SuperTag/TagBase.gd"
 }

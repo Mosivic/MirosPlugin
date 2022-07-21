@@ -13,7 +13,7 @@ var setting:ModuleSettingResource
 
 var tag_resource:TagResource
 
-func init(_plugin,_setting):
+func init(_core,_plugin,_setting):
 	plugin = _plugin
 	setting = _setting
 	
@@ -51,9 +51,13 @@ func _on_AddBtn_button_down():
 	if tag == "" or tag_resource.Tags.has(tag):return
 	tag_resource.Tags.append(tag)
 	generate_tags_list()
+	update()
 
-func on_DelBtn_button_down(tag_item):
-	pass
+func on_DelBtn_button_down(tag_item:Control):
+	var tag_name = tag_item.get_node("TagBtn").text
+	tag_resource.Tags.erase(tag_name)
+	tag_item.queue_free()
+	update()
 	
 func on_TagBtn_button_down(tag_item):
 	pass

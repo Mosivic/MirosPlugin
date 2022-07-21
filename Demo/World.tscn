@@ -1,7 +1,8 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://Demo/asset/triangle_pink.png" type="Texture" id=1]
 [ext_resource path="res://Demo/PlayerD.gd" type="Script" id=2]
+[ext_resource path="res://addons/miros/module/SuperTag/TagEngine.gd" type="Script" id=3]
 
 [sub_resource type="CircleShape2D" id=1]
 
@@ -10,6 +11,9 @@
 [node name="KinematicBody2D" type="KinematicBody2D" parent="."]
 position = Vector2( 589, 289 )
 script = ExtResource( 2 )
+__meta__ = {
+"tags": [ "Player" ]
+}
 
 [node name="TrianglePink" type="Sprite" parent="KinematicBody2D"]
 scale = Vector2( 2, 2 )
@@ -23,6 +27,9 @@ shape = SubResource( 1 )
 [node name="KinematicBody2D2" type="KinematicBody2D" parent="."]
 position = Vector2( 117, 483 )
 script = ExtResource( 2 )
+__meta__ = {
+"tags": [ "Player" ]
+}
 
 [node name="TrianglePink" type="Sprite" parent="KinematicBody2D2"]
 scale = Vector2( 2, 2 )
@@ -33,9 +40,12 @@ flip_h = true
 position = Vector2( 0.25, 0 )
 shape = SubResource( 1 )
 
-[node name="KinematicBody2D3" type="KinematicBody2D" parent="."]
+[node name="KinematicBody2D3" type="KinematicBody2D" parent="." groups=["Tags"]]
 position = Vector2( 663, 538 )
 script = ExtResource( 2 )
+__meta__ = {
+"tags": [ "Player" ]
+}
 
 [node name="TrianglePink" type="Sprite" parent="KinematicBody2D3"]
 scale = Vector2( 2, 2 )
@@ -46,9 +56,12 @@ flip_h = true
 position = Vector2( 0.25, 0 )
 shape = SubResource( 1 )
 
-[node name="KinematicBody2D4" type="KinematicBody2D" parent="."]
+[node name="KinematicBody2D4" type="KinematicBody2D" parent="." groups=["Tags"]]
 position = Vector2( 88, 188 )
 script = ExtResource( 2 )
+__meta__ = {
+"tags": [ "Player" ]
+}
 
 [node name="TrianglePink" type="Sprite" parent="KinematicBody2D4"]
 scale = Vector2( 2, 2 )
@@ -74,3 +87,6 @@ polygon = PoolVector2Array( 116, 356, 236, 392, 468, 390, 553, 206, 563, 104, 32
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="StaticBody2D"]
 polygon = PoolVector2Array( 3, 1, 1016, 5, 1017, 599, 7, 593, 7, 17, 16, 23, 19, 572, 1007, 588, 1007, 22, 25, 8 )
+
+[node name="Node" type="Node" parent="."]
+script = ExtResource( 3 )
