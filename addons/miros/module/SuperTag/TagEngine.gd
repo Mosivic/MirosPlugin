@@ -3,15 +3,21 @@ extends Node
 export(Resource) var tag_reource
 
 var tree:SceneTree
-
+#节点数组,存储携带标签的节点
 var nodes:Array
-
+#标签索引图,存储各种标签对应的所有节点
 var tags_map:Dictionary
-
+#tagbase实现的字典,key为tag_name,value为tagbase实例对象
 var tags_object:Dictionary
-
+#当前执行的tag效果,元素为{"tag":tag_name,"node":node_reference}
 var tags_effect:Array
 
+# 提示配置资源文件
+# 生成tags_object
+# 绑定tree的节点进入事件, 用于处理新进入的标签节点
+# 生成tags_map
+# 绑定node的离开事件,用于处理离开后的标签节点
+# 对携带主动标签的节点,进行效果达成
 func _ready():
 	assert(tag_reource != null,"TagEngine:未配置资源文件.")
 	
@@ -43,7 +49,8 @@ func _ready():
 func _process(delta):
 	handle_effect()
 
-#执行列表中的标签效果
+# 执行列表中的标签效果
+# 移除已经失效的标签效果
 func handle_effect():
 	for effect in tags_effect:
 		var tag = effect["tag"]
@@ -54,18 +61,20 @@ func handle_effect():
 		if tag_object.is_valid() == false:
 			remove_effect(effect)
 
-#主动执行标签效果,限定 Positive 和 OneShot
+#主动执行标签效果,由节点自己主动调用该方法
 func drive_effect(tag:String,node:Node):
 	var tag_object:TagBase = tags_object[tag]
 	var result = tag_object.effect(self,node)
 	return result
 
+# 添加标签效果到执行中
 func add_effect(tag:String,node:Node):
 	tags_effect.append({
 		"tag":tag,
 		"node":node
 	})
 
+# 移除标签效果
 func remove_effect(effect):
 	tags_effect.erase(effect)
 
@@ -87,10 +96,4 @@ func on_node_tree_exited(node:Node):
 	nodes.erase(node)
 
 
-func filter(tag:String)->Array:
-	var result:= []
-	for node in nodes:
-		var tags:Array= node.get_meta("tags")
-		if tags.has(tag):
-			result.append(node)
-	return result
+

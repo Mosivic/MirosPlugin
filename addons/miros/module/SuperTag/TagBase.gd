@@ -13,24 +13,23 @@ enum LIVELFIE{
 	REPEAT,
 }
 
-var tag_name:String
 var positivity = POSITIVITY.NULL
 var livelife = LIVELFIE.NULL
 
 var is_valid := true
 
-func _condition(object:Object)->bool:
+func _condition(node:Node)->bool:
 	return true
 
-func _execute(object:Object):
+func _execute(node:Node):
 	pass
 
 func is_valid()->bool:
 	return is_valid
 
-func effect(engine,object:Object):
-	if not _condition(object): return 
-	_execute(object)
+func effect(engine,node):
+	if not _condition(node): return 
+	_execute(node)
 	if livelife == LIVELFIE.ONESHOT:
 		is_valid = false
 

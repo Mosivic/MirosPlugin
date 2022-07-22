@@ -8,13 +8,13 @@ onready var import_result_label = $HBoxContainer/TagPanel/HBoxContainer/ImportRe
 onready var add_tag_line = $HBoxContainer/TagPanel/HBoxContainer/AddTag/InputLine
 onready var tags_list = $HBoxContainer/TagPanel/HBoxContainer/TagsContainer/VBoxContainer
 
-var plugin:EditorPlugin
+var miros:Miros
 var setting:ModuleSettingResource
 
 var tag_resource:TagResource
 
-func init(_core,_plugin,_setting):
-	plugin = _plugin
+func init(_miros,_setting):
+	miros = _miros
 	setting = _setting
 	
 	var extra:Dictionary = setting.extra
@@ -37,21 +37,26 @@ func _on_ImportBtn_button_down():
 func generate_tags_list():
 	for item in tags_list.get_children():
 		item.queue_free()
-	for tag in tag_resource.Tags:
+	for key in tag_resource.tags:
 		var tag_item = tag_item_tscn.instance()
-		tag_item.name = tag
-		tag_item.get_node("TagBtn").text = tag
+		tag_item.name = key
+		tag_item.get_node("TagBtn").text = key
 		tag_item.get_node("DelBtn").connect("button_down",self,"on_DelBtn_button_down",[tag_item])
 		tag_item.get_node("TagBtn").connect("button_down",self,"on_TagBtn_button_down",[tag_item])
 		tags_list.add_child(tag_item)
 
 
 func _on_AddBtn_button_down():
-	var tag = add_tag_line.text
-	if tag == "" or tag_resource.Tags.has(tag):return
-	tag_resource.Tags.append(tag)
-	generate_tags_list()
-	update()
+	var tag_path = add_tag_line.text
+	var tag_script = load(tag_path)
+	if not tag_script is TagBase:
+		miros.show_tip("添加的脚本路径不是TagBase脚本.")
+	else:
+		var tag_name = (tag_script as TagBase).tag_name
+		tag_resource.tags[tag_name] = tag_path
+		miros.show_tip(tag_name+" 标签添加成功.")
+		generate_tags_list()
+		update()
 
 func on_DelBtn_button_down(tag_item:Control):
 	var tag_name = tag_item.get_node("TagBtn").text

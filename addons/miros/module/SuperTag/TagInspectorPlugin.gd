@@ -1,11 +1,13 @@
 extends EditorInspectorPlugin
 
+var miros:Miros
 var setting:ModuleSettingResource
-var tags:Array
+var tags:Dictionary
 
 var inspector_tscn = preload("res://addons/miros/module/SuperTag/UI/TagInspectorUI.tscn")
 
-func init(_setting:ModuleSettingResource):
+func init(_miros,_setting:ModuleSettingResource):
+	miros = _miros
 	setting = _setting
 
 func can_handle(object):
@@ -25,7 +27,7 @@ func parse_begin(object):
 func generate_inspector(object):
 
 	var inspector = inspector_tscn.instance()
-	inspector.init(tags,object)
+	inspector.init(miros,tags,object)
 	add_custom_control(inspector)
 
 

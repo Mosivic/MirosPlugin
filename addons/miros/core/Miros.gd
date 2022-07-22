@@ -1,9 +1,12 @@
 tool
 extends Control
-
+class_name Miros
 
 var plugin :EditorPlugin
 var module_item_tscn = preload("res://addons/miros/core/ModuleItem.tscn")
+
+var tip_bubble_tscn = preload("res://addons/miros/core/Extra/TipBubble.tscn")
+var tip_bubble
 
 var tabs_map:Dictionary 
 var tabs_index := 0
@@ -26,10 +29,15 @@ func start(_plugin:EditorPlugin):
 		
 		if setting.is_open:
 			module_item.get_node("Switch").pressed = true #注意, 该代码会调动Swith的绑定事件"on_ModuleSwitch_toggled"
+	
+	tip_bubble = tip_bubble_tscn.instance()
+	plugin.get_editor_interface().add_child(tip_bubble)
 
-
+	
 # 结束所有模块,销毁自身
 func over():
+	plugin.get_editor_interface().remove_child(tip_bubble)
+
 	var modules = get_node("Modules").get_children()
 	for core in modules:
 		core.over()
@@ -39,7 +47,7 @@ func over():
 
 func create_module(setting:ModuleSettingResource):
 	if get_node("Modules").find_node(setting.name) != null:return
-	var core :ModuleCore= load(setting.core).new()
+	var core = load(setting.core).new()
 	core.init(plugin,setting)
 	core.name = setting.name
 	setting.is_open = true
@@ -76,10 +84,11 @@ func on_ModuleSetting_button_down(setting:ModuleSettingResource):
 		tabs_map[setting_panel_name] = tabs_index
 		var setting_panel = load(setting.setting_panel).instance()
 		tabs.add_child(setting_panel)
-		setting_panel.init(plugin,setting)
+		setting_panel.init(self,setting)
 	tabs.set_current_tab(tabs_map[setting_panel_name]) 
 	update()
 
 
-
+func show_tip(text:String):
+	tip_bubble.show_tip(text)
 
