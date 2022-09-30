@@ -11,6 +11,10 @@ var tip_bubble
 var tabs_map:Dictionary 
 var tabs_index := 0
 
+
+#如果需要添加模块
+#1.新建一个模块设置资源文件（ModuleSettingResource）
+#2.添加该资源文件路径至下面
 const Modules = [
 	"res://addons/miros/module/BehaviorTree/BTGraphSettingResource.tres",
 	"res://addons/miros/module/SuperTag/SuperTagSettingResource.tres"

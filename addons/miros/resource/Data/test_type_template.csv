@@ -1,0 +1,4 @@
+ID,TYPE,INPUT,,,,
+0001,Human,i,level=i,hp=100+7*i	,atk=6+4i,def=33+3i	
+0002,Goblin,i,level=i,hp=100+7*i	,atk=6+4i,def=33+3i	
+0003,Grawf,i,level=i,hp=100+7*i	,atk=6+4i,def=33+3i	
