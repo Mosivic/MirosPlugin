@@ -14,13 +14,14 @@ var actor:Node
 # 引擎结点数据
 var nodes_data:Dictionary
 # 行为参数
-var blackboard:Reference
+var blackboard:WeakRef
 # 是否激活
-var is_active:bool=false setget set_active
+var is_active:bool=false:
+	set=set_active
 
 
 
-func _init(graph_data:Dictionary,_blackboard:Reference):
+func _init(graph_data:Dictionary,_blackboard:WeakRef):
 	self.blackboard = _blackboard
 	self.actor = blackboard.data["actor"]
 	self.name = "BTEngine"

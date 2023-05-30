@@ -1,4 +1,4 @@
-extends Reference
+extends WeakRef
 class_name TagBase
 
 enum POSITIVITY{
@@ -23,9 +23,6 @@ func _condition(node:Node)->bool:
 
 func _execute(node:Node):
 	pass
-
-func is_valid()->bool:
-	return is_valid
 
 func effect(engine,node):
 	if not _condition(node): return 

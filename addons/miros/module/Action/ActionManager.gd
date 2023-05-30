@@ -1,10 +1,7 @@
 extends Node
 class_name ActionManager
 
-
 var actions:Dictionary ={}
-
-
 
 # 添加Action
 func AddAction(name:String,path:String):
@@ -12,6 +9,7 @@ func AddAction(name:String,path:String):
 		actions[name] = path
 	else:
 		print("ActionManager:addAction:action is exist")
+
 
 # 根据名字删除Action
 func RemoveAction(name:String):

@@ -1,13 +1,14 @@
-extends KinematicBody2D
+extends CharacterBody2D
 
 
-export(Resource) var test_res
+@export var test_res:Resource
 
 
 func _ready():
 	var action_refs = Blackboard.new()
 	action_refs.data["actor"] = self
-	var engine = load("res://addons/miros/module/BehaviorTree/Util/BTEngine.gd").new(test_res.data,action_refs)
+	var engine_class:GDScript = load("res://addons/miros/module/BehaviorTree/Util/BTEngine.gd")
+	var engine = engine_class.new(test_res.data,action_refs)
 	engine.set_active(true)
 
 #	add_hp()
@@ -19,7 +20,7 @@ func _ready():
 # 添加一个血量降为0的触发器，触发hp_zero_call()函数
 func add_hp_zero_trigger():
 	var one_data = get_node("OneData")
-	one_data.add_property_trigger("Hp reduce to zero","hp",0,1,funcref(self,"hp_zero_call"))
+	one_data.add_property_trigger("Hp reduce to zero","hp",0,1,Callable(self,"hp_zero_call"))
 
 func hp_zero_call():
 	print("I am dead!")
@@ -34,7 +35,7 @@ func add_hp():
 #自身添加一个持续30s，每1秒触发减血量5点的buff，buff结束后调用poison_over()函数
 func add_buff_poison():
 	var one_data = get_node("OneData")
-	one_data.add_buff("poison","hp",-5,0.5,30,1,funcref(self,"poison_on"),funcref(self,"poison_over"))
+	one_data.add_buff("poison","hp",-5,0.5,30,1,Callable(self,"poison_on"),Callable(self,"poison_over"))
 
 func poison_on():
 	print("I am poisoning,help me!")

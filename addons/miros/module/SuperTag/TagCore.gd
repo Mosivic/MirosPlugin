@@ -1,4 +1,4 @@
-tool
+@tool
 extends ModuleCore
 
 var inspector_plugin:EditorInspectorPlugin

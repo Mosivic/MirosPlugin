@@ -1,4 +1,4 @@
-extends Reference
+extends WeakRef
 class_name STATE
 
 const TASK_STATE={

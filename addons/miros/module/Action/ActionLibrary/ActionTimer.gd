@@ -2,9 +2,10 @@
 # 暂时器Action  By Mosiv 2022.04.23
 # 需要传入参数time，指定暂停时间
 ###
-extends "res://addons/miros/module/Action/ActionBase.gd"
+extends ActionBase
 
-func _init(arg:Dictionary,refs:Reference).(arg,refs):
+func _init(arg:Dictionary,refs:WeakRef):
+	super(arg,refs)
 	action_name = "Timer"
 	
 func _over_condition()->bool:

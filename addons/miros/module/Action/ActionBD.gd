@@ -1,4 +1,4 @@
-extends Reference
+extends WeakRef
 
 const Actions = {
 	ActionEmpty = preload("res://addons/miros/module/Action/ActionLibrary/ActionEmpty.gd"),

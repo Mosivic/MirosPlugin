@@ -1,5 +1,5 @@
 class_name STRTarget
-extends Reference
+extends WeakRef
 
 var target
 var target_pos:Vector2

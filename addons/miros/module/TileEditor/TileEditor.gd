@@ -1,16 +1,16 @@
-tool
+@tool
 extends Node2D
 
-export(NodePath) var tilemap_node_path 
-export(Resource) var tilemap_res 
-export(bool) var clear_tilemap setget set_clear_tilemap
-export(bool) var load_tilemap setget set_load_tilemap
-export(bool) var update_tilemap setget set_update_tilemap
-export(int) var edit_tile_heigh = 0
-export(bool) var edit_mode setget set_edit_mode
-export(Vector2) var square_zero
-export(Vector2) var square_size
-export(bool) var square_create setget set_square_create 
+@export var tilemap_node_path:NodePath 
+@export var tilemap_res:Resource 
+@export var clear_tilemap:bool:set=set_clear_tilemap
+@export var load_tilemap:bool:set=set_load_tilemap
+@export var update_tilemap:bool:set=set_update_tilemap
+@export var edit_tile_heigh:int = 0
+@export var edit_mode:bool:set=set_edit_mode
+@export var square_zero:Vector2
+@export var square_size:Vector2
+@export var square_create:bool:set=set_square_create 
 
 var tile_tscn: = preload("res://addons/miros/module/TileEditor/TileInstance/Tile.tscn")
 
@@ -22,7 +22,7 @@ const tile_heigh = 32
 const tile_layer_heigh = 16
 
 func _process(delta):
-	update()
+	#update()
 	if edit_mode:
 		edit()
 
@@ -34,13 +34,13 @@ func _draw():
 		var yfrom = Vector2(-line_length,line_slope*line_length)
 		var yto = Vector2(line_length,-line_slope*line_length)	
 		for i in range(line_count):
-			draw_line(xfrom+Vector2(i*tile_width,0),xto+Vector2(i*tile_width,0),Color.gray,1.0)
-			draw_line(yfrom+Vector2(i*tile_width,0),yto+Vector2(i*tile_width,0),Color.gray,1.0)
+			draw_line(xfrom+Vector2(i*tile_width,0),xto+Vector2(i*tile_width,0),Color.GRAY,1.0)
+			draw_line(yfrom+Vector2(i*tile_width,0),yto+Vector2(i*tile_width,0),Color.GRAY,1.0)
 			
-			draw_line(xfrom-Vector2(i*tile_width,0),xto-Vector2(i*tile_width,0),Color.gray,1.0)
-			draw_line(yfrom-Vector2(i*tile_width,0),yto-Vector2(i*tile_width,0),Color.gray,1.0)
-		draw_line(xfrom,xto,Color.red,2.0)
-		draw_line(yfrom,yto,Color.yellowgreen,2.0)
+			draw_line(xfrom-Vector2(i*tile_width,0),xto-Vector2(i*tile_width,0),Color.GRAY,1.0)
+			draw_line(yfrom-Vector2(i*tile_width,0),yto-Vector2(i*tile_width,0),Color.GRAY,1.0)
+		draw_line(xfrom,xto,Color.RED,2.0)
+		draw_line(yfrom,yto,Color.YELLOW_GREEN,2.0)
 
 # 清除tilemap,从场景和节点
 func set_clear_tilemap(value):
@@ -152,7 +152,7 @@ func load_tilemap_res():
 		
 # 保存tilemap资源数据
 func save_tilemap_res():
-	ResourceSaver.save(tilemap_res.resource_path,tilemap_res)
+	ResourceSaver.save(tilemap_res,tilemap_res.resource_path)
 
 # 清除tilemap资源数据
 func clear_tilemap_res():

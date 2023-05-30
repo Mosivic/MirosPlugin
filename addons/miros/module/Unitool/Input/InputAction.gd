@@ -11,21 +11,21 @@ class_name InputAction
 var functions:Dictionary = {} 
 
 func _ready():
-	bind("ui_up","test",funcref(self,"test"))
-	bind("ui_up","test2",funcref(self,"test2"))
+	bind("ui_up","test",Callable(self,"test"))
+	bind("ui_up","test2",Callable(self,"test2"))
 
 func _process(delta):
 	if functions.size() == 0:return
 	for value in functions.values():
 		if Input.is_action_just_pressed(value["action"]):
-			var function:FuncRef = value["function"]
-			function.call_func()
+			var function:Callable = value["function"]
+			function.call()
 
 ## action: 输入指令
 ## name : 动作名
 ## function : 执行函数
 # @action
-func bind(action:String,name:String,function:FuncRef):
+func bind(action:String,name:String,function:Callable):
 	functions[name] = {"action":action,"function":function} 
 	
 

@@ -1,8 +1,9 @@
 extends Node2D
 
 
-export(Vector3) var pos_unit setget set_pos_unit
-export var type:int
+@export var pos_unit:Vector3:set=set_pos_unit
+## 单位类型
+@export var type:int
 
 func set_pos_unit(value:Vector3):
 	var GameTool = load("res://addons/miros/core/Miros.gd").GetGameTool()

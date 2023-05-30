@@ -1,4 +1,4 @@
-tool
+@tool
 extends ModuleCore
 
 var bt_graph_editor_tscn = preload("res://addons/miros/module/BehaviorTree/Util/BTGraphEditor/BTGraphEditor.tscn")

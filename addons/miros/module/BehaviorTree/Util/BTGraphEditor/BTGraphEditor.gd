@@ -1,12 +1,12 @@
-tool
+@tool
 extends Control
 
 
-onready var file_dialog:FileDialog = get_node("./UI/FileDialog")
+@onready var file_dialog:FileDialog = get_node("./UI/FileDialog")
 # 行为树Graph
-onready var graph = $GraphEdit
+@onready var graph = $GraphEdit
 # UI
-onready var ui = $UI
+@onready var ui = $UI
 # 动作数据库
 const ActionBD = preload("res://addons/miros/module/Action/ActionBD.gd")
 # 行为树类数据库
@@ -31,7 +31,7 @@ var current_layer:String = parent_node
 func set_plugin(value:EditorPlugin):
 	_plugin = value
 	if not self.is_inside_tree():
-		yield(self,"ready")
+		await self.ready
 	ui.init(self)
 	ui._set_path()
 	_clear_graph()
@@ -163,7 +163,7 @@ func _create_node(info:Dictionary)->Node:
 
 # Delete appoint node / 删除给定结点
 func _delete_node(node:Node):
-	if graph.has_node(node.name):
+	if graph.has_node(node.get_path()):
 		graph.remove_child(node)
 		node.queue_free()
 
@@ -250,7 +250,9 @@ func _parse_begin(plugin:EditorInspectorPlugin):
 	vbox.add_child(dropdown)
 	var createNodebutton = Button.new()
 	createNodebutton.text = "Create"
-	createNodebutton.connect("pressed",self,"_on_createNodeButton_pressed",[dropdown])
+	
+	# Bug dropdown未传入信号
+	createNodebutton.pressed.connect(Callable(self,"_on_createNodeButton_pressed"))
 	createNodebutton.size_flags_horizontal = Control.SIZE_EXPAND + Control.SIZE_SHRINK_END
 	vbox.add_child(createNodebutton)
 	plugin.add_custom_control(vbox)
@@ -262,8 +264,8 @@ func _parse_begin(plugin:EditorInspectorPlugin):
 	var loadButton = Button.new()
 	saveButton.text = "Save"
 	loadButton.text = "Load"
-	saveButton.connect("button_down",ui,"_on_SaveBtn_pressed")
-	loadButton.connect("button_down",ui,"_on_LoadBtn_pressed")
+	saveButton.button_down.connect(Callable(ui,"_on_SaveBtn_pressed"))
+	loadButton.button_down.connect(Callable(ui,"_on_LoadBtn_pressed"))
 	hbox.add_child(saveButton)
 	hbox.add_child(loadButton)
 	plugin.add_custom_control(hbox)
@@ -271,7 +273,7 @@ func _parse_begin(plugin:EditorInspectorPlugin):
 	# 创建构建Actions按钮
 	var buildActionsButtion = Button.new()
 	buildActionsButtion.text = "Build Actions"
-	buildActionsButtion.connect("button_down",self,"build_actions")
+	buildActionsButtion.button_down.connect(Callable(self,"build_actions"))
 	plugin.add_custom_control(buildActionsButtion)
 	
 	# 显示被选择结点

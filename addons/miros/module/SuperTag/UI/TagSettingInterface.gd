@@ -1,12 +1,12 @@
-tool
-extends Tabs
+@tool
+extends TabBar
 
 var tag_item_tscn = preload("res://addons/miros/module/SuperTag/UI/TagItem.tscn")
 
-onready var resource_line = $HBoxContainer/TagPanel/HBoxContainer/ImportResource/LineEdit
-onready var import_result_label = $HBoxContainer/TagPanel/HBoxContainer/ImportResult/ResultLabel
-onready var add_tag_line = $HBoxContainer/TagPanel/HBoxContainer/AddTag/InputLine
-onready var tags_list = $HBoxContainer/TagPanel/HBoxContainer/TagsContainer/VBoxContainer
+@onready var resource_line = $HBoxContainer/TagPanel/HBoxContainer/ImportResource/LineEdit
+@onready var import_result_label = $HBoxContainer/TagPanel/HBoxContainer/ImportResult/ResultLabel
+@onready var add_tag_line = $HBoxContainer/TagPanel/HBoxContainer/AddTag/InputLine
+@onready var tags_list = $HBoxContainer/TagPanel/HBoxContainer/TagsContainer/VBoxContainer
 
 var miros:Miros
 var setting:ModuleSettingResource
@@ -56,17 +56,17 @@ func _on_AddBtn_button_down():
 		tag_resource.tags[tag_name] = tag_path
 		miros.show_tip(tag_name+" 标签添加成功.")
 		generate_tags_list()
-		update()
+		#update()
 
 func on_DelBtn_button_down(tag_item:Control):
 	var tag_name = tag_item.get_node("TagBtn").text
 	tag_resource.Tags.erase(tag_name)
 	tag_item.queue_free()
-	update()
+	#update()
 	
 func on_TagBtn_button_down(tag_item):
 	pass
 
 # 保持TagResource
 func _on_SaveBtn_button_down():
-	ResourceSaver.save(tag_resource.resource_path,tag_resource)
+	ResourceSaver.save(tag_resource,tag_resource.resource_path)

@@ -15,6 +15,6 @@ func over():
 	pass
 
 func save():
-	ResourceSaver.save(setting.resource_path,setting)
+	ResourceSaver.save(setting,setting.resource_path)
 
 

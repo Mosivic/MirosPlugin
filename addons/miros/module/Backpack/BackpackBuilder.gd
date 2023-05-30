@@ -6,20 +6,20 @@
 # 指定Backpack.gd的资源res
 # 设置好在Inspecter中本生成器的参数，点击生成
 # 启动场景OK！
-tool
+@tool
 extends Node
 
 # 自定义Slot需要为Control基类型
-export(PackedScene) var custom_slot setget set_custom_slot
+@export var custom_slot:PackedScene:set=set_custom_slot
 
-export(int) var slot_columns = 8
-export(int) var slot_raws = 8
-export(Vector2) var slot_size = Vector2(32,32)
+@export var slot_columns:int = 8
+@export var slot_raws:int = 8
+@export var slot_size:Vector2 = Vector2(32,32)
 
-export(NodePath) var backpack_path 
+@export var backpack_path:NodePath 
 
-export(bool) var generate setget set_generate
-export(bool) var clear setget set_clear
+@export var generate:bool:set=set_generate
+@export var clear:bool:set=set_clear
 
 
 

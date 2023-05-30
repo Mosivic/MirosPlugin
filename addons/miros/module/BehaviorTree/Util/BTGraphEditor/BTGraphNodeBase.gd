@@ -1,4 +1,4 @@
-tool
+@tool
 extends GraphNode
 
 # 保存连接该节点的左右节点引用
@@ -93,7 +93,8 @@ func clear_children_node():
 
 
 func _on_GraphNode_resize_request(new_minsize):
-	rect_size = new_minsize
+	# 更改rect_size为size
+	size = new_minsize
 
 func _on_Content_text_changed(new_text):
 	hint = new_text

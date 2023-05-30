@@ -1,11 +1,12 @@
-extends "res://addons/miros/module/Action/ActionBase.gd"
+extends ActionBase
 
-var actor:KinematicBody2D
+var actor:CharacterBody2D
 
-export var speed := 500
-export var angular_speed := 5.0
+@export var speed := 500
+@export var angular_speed := 5.0
 
-func _init(arg:Dictionary,refs:Reference).(arg,refs):
+func _init(arg:Dictionary,refs:WeakRef):
+	super(arg,refs)
 	action_name = "TopDownMove"
 
 func _action_process(delta):
@@ -13,8 +14,6 @@ func _action_process(delta):
 
 func _action_physics_process(delta):
 	move(delta)
-
-
 
 func _start_condition()->bool:
 	actor = action_refs.data["actor"]
@@ -29,7 +28,8 @@ func move(delta):
 	actor.rotation += rotate_direction * angular_speed * delta
 
 	var velocity := (Input.get_action_strength("down") - Input.get_action_strength("up")) * actor.transform.y * speed
-	actor.move_and_slide(velocity)
+	## 更改 actor.move_and_slide(velocity)
+	actor.move_and_slide()
 
 
 # 在执行前准备

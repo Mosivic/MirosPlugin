@@ -20,7 +20,7 @@ func _ready():
 func launch(default:String,_host):
 	default_state = default
 	current_state = default
-	current_state_node = find_node(default)
+	current_state_node = find_child(default)
 	host = _host
 	is_pause = false
 
@@ -44,8 +44,8 @@ func select(state:String):
 	
 
 func _switch_state(to:String,from:String=current_state):
-	var from_state_node = find_node(from)
-	var to_state_node = find_node(to)
+	var from_state_node = find_child(from)
+	var to_state_node = find_child(to)
 	from_state_node.exit()
 	to_state_node.enter()
 	current_state = to
@@ -72,8 +72,8 @@ func build_state_tree(current:Node,left:String):
 	for child in children:
 		if child is StateTask:
 			child.host = host
-			child.connect("select",self,"select")
-			child.connect("back",self,"back")
+			child.select.connect(Callable(self,"select"))
+			child.back.connect(Callable(self,"back"))
 
 			right.append(child.name)
 			build_state_tree(child,current.name)

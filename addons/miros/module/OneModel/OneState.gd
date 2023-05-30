@@ -21,7 +21,7 @@ const STATE_OP_MODE ={
 signal state_changed
 
 # 状态列表
-export(Array) var states
+@export var states:Array
 # 当前状态 为状态列表中n(n>=1)个的组合
 var currrent_state:Array
 # 状态函数列表
@@ -36,28 +36,28 @@ var is_change_active:bool = true
 
 
 func _ready():
-	connect("state_changed",self,"state_listener")
+	state_changed.connect(Callable(self,"state_listener"))
 
 func _process(delta):
-	if process_pipeline.empty():return
+	if process_pipeline.is_empty():return
 	lanch_constant_pipeline(false)
 
 func _physics_process(delta):
-	if physics_process_pipeline.empty():return
+	if physics_process_pipeline.is_empty():return
 	lanch_constant_pipeline(true)
 
 
 func lanch_constant_pipeline(is_physics:bool = false):
 	var pipeline = physics_process_pipeline if is_physics else process_pipeline
 	for task in pipeline:
-		var func_ref:FuncRef = task["func"]
-		func_ref.call_func()
+		var func_ref:Callable = task["func"]
+		func_ref.call()
 
 func launch_shot_pipeline(pipeline:Array):
-	if pipeline.empty():return
+	if pipeline.is_empty():return
 	for task in pipeline:
-		var func_ref:FuncRef = task["func"]
-		func_ref.call_func()
+		var func_ref:Callable = task["func"]
+		func_ref.call()
 
 
 func state_listener(state:Array,mode:int):
@@ -175,7 +175,7 @@ func is_arry_been_wrapped(wrap:Array,inner:Array)->bool:
 	return true
 
 # 设置状态函数
-func set_state_func(_func:FuncRef,_state:Array,func_type = FUNC_TYPE.SHOT):
+func set_state_func(_func:Callable,_state:Array,func_type = FUNC_TYPE.SHOT):
 	var e = {
 		"state":_state,
 		"func":_func,

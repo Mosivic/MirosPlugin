@@ -1,4 +1,4 @@
-extends Reference
+extends WeakRef
 
 const BTNodeClass = {
 	Root = "res://addons/miros/module/BehaviorTree/Node/Root/BTRoot.gd",

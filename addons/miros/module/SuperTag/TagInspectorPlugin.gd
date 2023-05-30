@@ -17,7 +17,7 @@ func parse_begin(object):
 	if setting.extra.has("tag_resource_path"):
 		tags = load(setting.extra["tag_resource_path"]).tags
 		
-	if tags.empty():
+	if tags.is_empty():
 		var label = Label.new()
 		label.text = "No Tag"
 		add_custom_control(label)

@@ -1,6 +1,6 @@
 extends Node
 
-export(Resource) var tag_reource
+@export var tag_reource:Resource
 
 var tree:SceneTree
 #节点数组,存储携带标签的节点
@@ -28,11 +28,12 @@ func _ready():
 		tags_object[tag] = tag_object
 
 	tree = get_tree()
-	tree.connect("node_added",self,"on_tree_node_added")
+	tree.node_added.connect(Callable(self,"on_tree_node_added"))
 	
 	nodes = tree.get_nodes_in_group("Tags")
 	for node in nodes:
-		(node as Node).connect("tree_exited",self,"on_node_tree_exited",[node])
+		## Bug 未在连接时候将node节点自身作为参数传入
+		(node as Node).tree_entered.connect(Callable(self,"on_node_tree_exited"))
 		var tags = node.get_meta("tags",[])
 		for tag in tags:
 			if tags_map.has(tag):
@@ -58,7 +59,7 @@ func handle_effect():
 		var tag_object:TagBase = tags_object[tag]
 		var result = tag_object.effect(self,node)
 		
-		if tag_object.is_valid() == false:
+		if tag_object.is_valid == false:
 			remove_effect(effect)
 
 #主动执行标签效果,由节点自己主动调用该方法
@@ -81,7 +82,7 @@ func remove_effect(effect):
 
 func on_tree_node_added(node:Node):
 	var tags:Array= node.get_meta("tags",[])
-	if tags.empty():
+	if tags.is_empty():
 		return
 	else:
 		for tag in tags:

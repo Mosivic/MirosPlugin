@@ -1,5 +1,5 @@
 class_name STRStrategy
-extends Reference
+extends WeakRef
 
 var location:STRAgentLocation
 var target:STRTarget

@@ -1,4 +1,4 @@
-tool
+@tool
 extends EditorPlugin
 
 var Miros = preload("res://addons/miros/core/Miros.tscn").instance()

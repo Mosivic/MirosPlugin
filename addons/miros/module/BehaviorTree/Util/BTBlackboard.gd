@@ -1,3 +1,3 @@
-extends Reference
+extends WeakRef
 
 var data = {}

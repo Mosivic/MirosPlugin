@@ -1,4 +1,4 @@
-tool
+@tool
 extends Control
 class_name Miros
 
@@ -90,7 +90,7 @@ func on_ModuleSetting_button_down(setting:ModuleSettingResource):
 		tabs.add_child(setting_panel)
 		setting_panel.init(self,setting)
 	tabs.set_current_tab(tabs_map[setting_panel_name]) 
-	update()
+	#update()
 
 
 func show_tip(text:String):

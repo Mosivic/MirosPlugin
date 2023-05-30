@@ -1,4 +1,4 @@
-extends Reference
+extends WeakRef
 
 
 var host :Node

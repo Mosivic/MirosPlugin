@@ -1,7 +1,7 @@
 extends Node2D
 class_name Tilemap
 
-export(Resource) var tilemap_res
+@export var tilemap_res:Resource
 var tiles:Dictionary
 var data:Dictionary
 

@@ -1,4 +1,4 @@
-tool
+@tool
 extends Control
 
 
@@ -9,14 +9,14 @@ const ActionBD = preload("res://addons/miros/module/Action/ActionBD.gd")
 # 行为树类数据库
 const BTClassBD = preload("res://addons/miros/module/BehaviorTree/Util/BTClassDB.gd")
 
-const BTActionArg =  preload("res://addons/miros/module/BehaviorTree/Util/BTGraph/BTActionArg.tscn")
-const BTDecorator = preload("res://addons/miros/module/BehaviorTree/Util/BTGraph/BTDecorator.tscn")
+const BTActionArg =  preload("res://addons/miros/module/BehaviorTree/Util/BTGraphEditor/BTActionArg.tscn")
+const BTDecorator = preload("res://addons/miros/module/BehaviorTree/Util/BTGraphEditor/BTDecorator.tscn")
 
-onready var context_box = $Context/VBoxContainer
-onready var context = $Context
-onready var path = $Path
-onready var tree = $Tree
-onready var file_dialog = $FileDialog
+@onready var context_box = $Context/VBoxContainer
+@onready var context = $Context
+@onready var path = $Path
+@onready var tree = $Tree
+@onready var file_dialog = $FileDialog
 
 var graph_core 
 
@@ -38,7 +38,7 @@ func _input(event):
 	if event.is_pressed() :
 		if event.has_meta("button_index"):
 			print("hai")
-		if event is InputEventMouseButton and event.button_index == BUTTON_RIGHT:
+		if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_RIGHT:
 			if graph_core.selected_node == null:
 				_build_main_context()
 			else:
@@ -159,7 +159,7 @@ func _generate_context_button(text:String,event_name:String="",meta_name:String=
 	if meta_name != "":
 		b.set_meta(meta_name,meta_data)
 	if event_name != "":
-		b.connect("button_down",self,event_name,[b])
+		b.button_down.connect("button_down",self,event_name,[b])
 	_set_button_icon(b,icon_name)
 	context_box.add_child(b)
 	context_button_db[text] = b
@@ -188,9 +188,9 @@ func _set_path():
 			current_layer = n.parent_node
 	
 	for i in road:
-		var b = ToolButton.new()
+		var b = Button.new()
 		b.text = i + "/"
-		b.connect("button_down",self,"_on_path_button_pressed",[i])
+		b.button_down.connect("button_down",self,"_on_path_button_pressed",[i])
 		path.add_child(b)
 
 # 路径按钮按下
@@ -356,7 +356,7 @@ func _on_FileDialog_confirmed():
 			var res =ResourceLoader.load(path)
 			graph_core._make_graph_data()
 			res.data = graph_core.graph_data.duplicate(true)
-			ResourceSaver.save(path,res)
+			ResourceSaver.save(res,path)
 
 	elif file_mode == FILE_MODE.LOAD:
 		graph_core._clear_graph()

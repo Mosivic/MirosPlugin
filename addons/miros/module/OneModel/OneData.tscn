@@ -1,9 +1,9 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=2 format=3 uid="uid://bqjw4m1fxybwh"]
 
-[ext_resource path="res://addons/miros/module/OneModel/OneData.gd" type="Script" id=1]
+[ext_resource type="Script" path="res://addons/miros/module/OneModel/OneData.gd" id="1"]
 
 [node name="OneData" type="Node"]
-script = ExtResource( 1 )
+script = ExtResource("1")
 custom_property = {
 "attack": 4,
 "hp": 100.0

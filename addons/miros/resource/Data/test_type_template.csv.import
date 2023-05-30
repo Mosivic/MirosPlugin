@@ -1,0 +1,17 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://b8r5appohg3fk"
+
+[deps]
+
+files=["res://addons/miros/resource/Data/test_type_template.TYPE.translation", "res://addons/miros/resource/Data/test_type_template.INPUT.translation", "res://addons/miros/resource/Data/test_type_template..translation", "res://addons/miros/resource/Data/test_type_template..translation", "res://addons/miros/resource/Data/test_type_template..translation", "res://addons/miros/resource/Data/test_type_template..translation"]
+
+source_file="res://addons/miros/resource/Data/test_type_template.csv"
+dest_files=["res://addons/miros/resource/Data/test_type_template.TYPE.translation", "res://addons/miros/resource/Data/test_type_template.INPUT.translation", "res://addons/miros/resource/Data/test_type_template..translation", "res://addons/miros/resource/Data/test_type_template..translation", "res://addons/miros/resource/Data/test_type_template..translation", "res://addons/miros/resource/Data/test_type_template..translation"]
+
+[params]
+
+compress=true
+delimiter=0

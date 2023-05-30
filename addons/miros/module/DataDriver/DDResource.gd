@@ -1,5 +1,5 @@
 extends Resource
 
 
-export(Dictionary) var types = {}
-export(Dictionary) var tags = {}
+@export var types:Dictionary = {}
+@export var tags:Dictionary = {}

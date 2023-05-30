@@ -1,6 +1,6 @@
-class_name STRAgentLocation
-extends Reference
 
+extends WeakRef
+class_name STRAgentLocation
 
 var diection := Vector2.RIGHT
 

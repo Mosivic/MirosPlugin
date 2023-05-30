@@ -1,6 +1,6 @@
 extends Resource
 
-export(Dictionary) var data ={
+@export var data:Dictionary ={
 	"icon":{
 		"name":"icon",
 		"texture":"res://icon.png",
@@ -20,7 +20,7 @@ func add_item(res:Resource,_name,_count:int=1):
 			"texture":"res://icon.png",
 			"count":_count
 		}
-	ResourceSaver.save(res.resource_path,res)
+	ResourceSaver.save(res,res.resource_path)
 
 # 移除指定数目的item
 func remove_item(res:Resource,_name,_count:int=1):
@@ -36,17 +36,17 @@ func remove_item(res:Resource,_name,_count:int=1):
 			data[_name]["count"] = minus
 	else:
 		pass
-	ResourceSaver.save(res.resource_path,res)
+	ResourceSaver.save(res,res.resource_path)
 
 # 移除全部数目的item
 func remove_item_all(res:Resource,_name):
 	if data.has(_name):
 		data.erase(_name)
-	ResourceSaver.save(res.resource_path,res)
+	ResourceSaver.save(res,res.resource_path)
 
 # 清除data
 func clear_data(res:Resource):
 	res.data.clear()
-	ResourceSaver.save(res.resource_path,res)
+	ResourceSaver.save(res,res.resource_path)
 
 

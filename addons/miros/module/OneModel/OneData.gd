@@ -3,8 +3,8 @@
 # 方法只由宿主使用
 extends Node
 
-export(Dictionary) var custom_property
-export(Resource) var data_res
+@export var custom_property:Dictionary
+@export var data_res:Resource
 
 const COMPARE_MODE={
 	NULL = 0,
@@ -58,11 +58,11 @@ func register_custom_property():
 func save_data():
 	if data_res != null:
 		data_res.data = data
-		ResourceSaver.save(data_res.resource_path,data_res)
+		ResourceSaver.save(data_res,data_res.resource_path)
 	else:
 		print("OneData:save_data() data_res is null with actor: "+ actor.name+ "")
 
-func add_property_trigger(_trigger_name:String,_property_name:String,_valve:float,_compare_mode:int,_recall:FuncRef):
+func add_property_trigger(_trigger_name:String,_property_name:String,_valve:float,_compare_mode:int,_recall:Callable):
 	property_trigger[_trigger_name] = {
 		"property_name":_property_name,
 		"valve":_valve,
@@ -81,20 +81,20 @@ func check_trigger():
 		var property_name = property_trigger[key]["property_name"]
 		var valve = property_trigger[key]["valve"]
 		var compare_mode = property_trigger[key]["compare_mode"]
-		var recall:FuncRef = property_trigger[key]["recall"]
+		var recall:Callable = property_trigger[key]["recall"]
 		var property = data[property_name]
 		match compare_mode:
 			COMPARE_MODE.NULL:
 				return
 			COMPARE_MODE.EQUAL:
 				if property == valve:
-					recall.call_func()
+					recall.call()
 			COMPARE_MODE.GREATER:
 				if property > valve:
-					recall.call_func()
+					recall.call()
 			COMPARE_MODE.LESS:
 				if property <  valve:
-					recall.call_func()
+					recall.call()
 	return
 				
 		
@@ -109,7 +109,7 @@ func caculate_property(_property_name:String,_value:float,_caculate_mode:int=1):
 	data[_property_name] = property
  
 
-func add_buff(_buff_name:String,_property_name:String,_value:float,_interval:float,_last:float,_caculate_mode:int=1,_on_recall:FuncRef=null,_over_recall:FuncRef=null):
+func add_buff(_buff_name:String,_property_name:String,_value:float,_interval:float,_last:float,_caculate_mode:int=1,_on_recall=null,_over_recall=null):
 	if buff.has(_buff_name):
 		var last = buff[_buff_name]["last"]
 		var intervel = buff[_buff_name]["intervel"]
@@ -139,8 +139,8 @@ func check_buff(delta):
 		var value = buff[key]["value"]
 		var intervel = buff[key]["intervel"]
 		var last = buff[key]["last"]
-		var on_recall:FuncRef = buff[key]["on_recall"]
-		var over_recall:FuncRef = buff[key]["over_recall"]
+		var on_recall:Callable = buff[key]["on_recall"]
+		var over_recall:Callable = buff[key]["over_recall"]
 		var time = buff[key]["time"]
 		var caculate_mode = buff[key]["caculate_mode"]
 		var property = data[property_name]
@@ -148,7 +148,7 @@ func check_buff(delta):
 		if last == -1: #一直存在
 			pass
 		elif last <= 0: #执行完毕，回调函数
-			if over_recall != null:over_recall.call_func()
+			if over_recall != null:over_recall.call()
 			return
 		else:
 			last -= delta
@@ -162,7 +162,7 @@ func check_buff(delta):
 				CACULATE_MODE.SQUARE:
 					property *= value
 					data[property_name] = property
-			if on_recall != null:on_recall.call_func()
+			if on_recall != null:on_recall.call()
 			#设置下一次执行时间
 			buff[key]["time"] = timer + intervel
 		else:

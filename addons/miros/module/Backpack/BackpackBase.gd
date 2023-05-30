@@ -3,7 +3,7 @@ extends PanelContainer
 class_name BackpackBase
 
 # 背包数据res
-export(Resource) var backpack_res 
+@export var backpack_res:Resource
 
 # Drag功能
 # 开启将 false 改为 true
@@ -45,11 +45,11 @@ func drag_item(event):
 		else:
 			pass
 	# 没有拿住，准备拿起
-	if holding_item.empty():
+	if holding_item.is_empty():
 		if focus_slot == null:return
 		if !_is_slot_has_item(focus_slot):return
 		if event is InputEventMouseButton:
-			if event.button_index == BUTTON_LEFT and event.pressed:
+			if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
 				holding_item = _get_slot_item(focus_slot)
 				_set_item_preview(item_preview,holding_item)
 				_remove_item_from_custom_slot(focus_slot)
@@ -59,7 +59,7 @@ func drag_item(event):
 		if focus_slot == null:return
 		if _is_slot_has_item(focus_slot):return
 		if event is InputEventMouseButton:
-			if event.button_index == BUTTON_LEFT and event.pressed:
+			if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
 				_set_item_to_custom_slot(focus_slot,holding_item)
 				holding_item.clear()
 				item_preview.hide()

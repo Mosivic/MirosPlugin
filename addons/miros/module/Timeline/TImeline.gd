@@ -1,4 +1,4 @@
-extends Reference
+extends WeakRef
 class_name Timeline
 
 enum TIMELINE_STATE{
@@ -34,7 +34,7 @@ func Execute(delta)->int:
 
 
 # 添加自动插入时间戳
-func AddStampAuto(stamp:float,action:Reference):
+func AddStampAuto(stamp:float,action:WeakRef):
 	var t = {"stamp":stamp,"action":action}
 	var size = timeline.size()
 	#时间戳正序插入
@@ -57,5 +57,5 @@ func RemoveStamp(stamp:float):
 	var size = timeline.size()
 	for i in range(0,size):
 		if timeline[i]["stamp"] == stamp:
-			timeline.remove(i)
+			timeline.erase(i)
 			break

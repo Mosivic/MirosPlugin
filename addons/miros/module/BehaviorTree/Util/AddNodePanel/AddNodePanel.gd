@@ -1,16 +1,16 @@
-tool
+@tool
 extends PanelContainer
 
 const BTClassBD = preload("res://addons/miros/module/BehaviorTree/Util/BTClassDB.gd")
 
 var _plugin:EditorPlugin
 
-onready var hbox = $ScrollContainer/HBoxContainer
+@onready var hbox = $ScrollContainer/HBoxContainer
 
 func set_plugin(value:EditorPlugin):
 	_plugin = value
 	if not self.is_inside_tree():
-		yield(self,"ready")
+		await self.ready
 	
 	for key in BTClassBD.BTNodeClass.keys():
 		var b = Button.new()
@@ -19,7 +19,7 @@ func set_plugin(value:EditorPlugin):
 			name = key,
 		})
 		b.text = key
-		b.connect("pressed",self,"_on_Button_pressed",[b])
+		b.pressed.connect("pressed",self,"_on_Button_pressed",[b])
 		b.icon = _plugin.get_editor_interface().get_base_control().get_icon("Node","EditorIcons")
 		b.rect_min_size = Vector2(100,40)
 		hbox.add_child(b)

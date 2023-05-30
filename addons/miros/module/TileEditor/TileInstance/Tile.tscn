@@ -1,11 +1,11 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=3 format=3 uid="uid://b1x230j2bapgl"]
 
-[ext_resource path="res://addons/miros/module/TileEditor/Unit.gd" type="Script" id=1]
-[ext_resource path="res://addons/miros/module/TileEditor/Resource/Image/Tile.png" type="Texture" id=2]
+[ext_resource type="Script" path="res://addons/miros/module/TileEditor/Unit.gd" id="1"]
+[ext_resource type="Texture2D" uid="uid://dxmn1tppt3t32" path="res://addons/miros/module/TileEditor/Resource/Image/Tile.png" id="2"]
 
 [node name="Tile" type="Node2D" groups=["Tile"]]
-script = ExtResource( 1 )
+script = ExtResource("1")
 
-[node name="Sprite" type="Sprite" parent="."]
-texture = ExtResource( 2 )
-offset = Vector2( 0, 62 )
+[node name="Sprite" type="Sprite2D" parent="."]
+texture = ExtResource("2")
+offset = Vector2(0, 62)

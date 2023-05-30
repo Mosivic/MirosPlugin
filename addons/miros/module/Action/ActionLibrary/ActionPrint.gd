@@ -1,6 +1,7 @@
-extends "res://addons/miros/module/Action/ActionBase.gd"
+extends ActionBase
 
-func _init(arg:Dictionary,refs:Reference).(arg,refs):
+func _init(arg:Dictionary,refs:WeakRef):
+	super(arg,refs)
 	action_name = "Print"
 	
 func _action_process(delta):

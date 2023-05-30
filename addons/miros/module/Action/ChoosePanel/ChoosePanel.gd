@@ -1,8 +1,5 @@
 extends PanelContainer
 
-
-
-
 func _get_script_func_name(node:Node)->Array:
 	var functions = node.get_script().get_script_method_list()
 	var names = []

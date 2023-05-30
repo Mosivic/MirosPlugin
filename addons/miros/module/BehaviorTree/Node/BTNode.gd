@@ -16,7 +16,8 @@ static func _task(e:BTEngine,is_physics:bool,delta:float)->int:
 	var node_data = e.current_node_data
 	var action = node_data["action"]
 	var action_state = action_execute(action,is_physics,delta)
-	return wrap(e,[action_state])
+	var a:Array = [action_state]
+	return wrap(e,a)
 
 
 # 任务完成后处理
