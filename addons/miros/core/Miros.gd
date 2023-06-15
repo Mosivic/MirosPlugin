@@ -25,10 +25,10 @@ func start(_plugin:EditorPlugin):
 	plugin = _plugin
 	for module in Modules:
 		var setting :ModuleSettingResource = load(module)
-		var module_item = module_item_tscn.instance()
+		var module_item = module_item_tscn.instantiate()
 		module_item.get_node("NameLabel").text = setting.name
-		module_item.get_node("Setting").connect("button_down",self,"on_ModuleSetting_button_down",[setting])
-		module_item.get_node("Switch").connect("toggled",self,"on_ModuleSwitch_toggled",[setting])
+		module_item.get_node("Setting").button_down.connect(on_ModuleSetting_button_down.bind(setting))
+		module_item.get_node("Switch").toggled.connect(on_ModuleSwitch_toggled.bind(setting))
 		get_node("Tabs/Center/VBoxContainer").add_child(module_item)
 		
 		if setting.is_open:
