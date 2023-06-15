@@ -53,9 +53,11 @@ func _show_inspector(b:Button):
 	graph_core.refresh_inspecter()
 	_hide_context()
 
-# 设置按钮图标
+# 设置按钮图标，get_icon函数已失效
 func _set_button_icon(b:Button,icon_name:String="Node"):
-	b.icon = graph_core._plugin.get_editor_interface().get_base_control().get_icon(icon_name,"EditorIcons")
+	pass
+	
+	#b.icon = graph_core._plugin.get_editor_interface().get_base_control().get_icon(icon_name,"EditorIcons")
 
 #------------------------------------------------------------------------------#
 #------------------------------------------------------------------------------#
@@ -113,7 +115,7 @@ func _clear_context():
 
 # 显示Context
 func _show_context():
-	context.rect_global_position = get_global_mouse_position()
+	context.global_position = get_global_mouse_position()
 	context.show()
 
 # 隐藏Context
@@ -155,11 +157,11 @@ func _generate_context_button(text:String,event_name:String="",meta_name:String=
 		return
 	var b = Button.new()
 	b.text = text
-	b.rect_min_size = Vector2(100,40)
+	b.custom_minimum_size = Vector2(100,40)
 	if meta_name != "":
 		b.set_meta(meta_name,meta_data)
 	if event_name != "":
-		b.button_down.connect("button_down",self,event_name,[b])
+		b.button_down.connect(Callable(self,event_name).bind(b))
 	_set_button_icon(b,icon_name)
 	context_box.add_child(b)
 	context_button_db[text] = b
@@ -190,7 +192,7 @@ func _set_path():
 	for i in road:
 		var b = Button.new()
 		b.text = i + "/"
-		b.button_down.connect("button_down",self,"_on_path_button_pressed",[i])
+		b.button_down.connect(_on_path_button_pressed.bind(i))
 		path.add_child(b)
 
 # 路径按钮按下
@@ -226,21 +228,21 @@ func _on_action_arg_add_button_down(node):
 	input_value_node.text = ""
 
 func _build_action_arg(node,key,value):
-	var bt_action_arg = BTActionArg.instance()
+	var bt_action_arg = BTActionArg.instantiate()
 	node.action_args[key] = value
 	node.get_node("VBoxContainer/Action/Args").add_child(bt_action_arg)
 	bt_action_arg.get_node("Key").text = key
 	bt_action_arg.get_node("Value").text =value
-	bt_action_arg.get_node("DelBtn").connect("button_down",self,"_on_action_arg_del_button_down",[bt_action_arg])
+	bt_action_arg.get_node("DelBtn").button_down.connect(_on_action_arg_del_button_down.bind(bt_action_arg))
 
 func _build_action_args_from_data(node):
 	var action_args = node.action_args
 	for key in action_args.keys():
-		var bt_action_arg = BTActionArg.instance()
-		node.find_node("Args").add_child(bt_action_arg)
+		var bt_action_arg = BTActionArg.instantiate()
+		node.find_child("Args").add_child(bt_action_arg)
 		bt_action_arg.get_node("Key").text = key
 		bt_action_arg.get_node("Value").text = action_args[key]
-		bt_action_arg.get_node("DelBtn").connect("button_down",self,"_on_action_arg_del_button_down",[bt_action_arg])
+		bt_action_arg.get_node("DelBtn").button_down.connect(_on_action_arg_del_button_down.bind(bt_action_arg))
 
 func _on_action_arg_del_button_down(node):
 	var parent = node.get_parent()
@@ -273,11 +275,11 @@ func _build_decorators_from_data(node):
 
 # 创建装饰
 func _build_decorator(node,_name:String):
-	var decorator = BTDecorator.instance()
+	var decorator = BTDecorator.instantiate()
 	decorator.get_node("Name").text = _name
-	decorator.get_node("Delete").connect("button_down",self,"_on_delete_decorator_button_pressed",[decorator])
+	decorator.get_node("Delete").button_down.connect(_on_delete_decorator_button_pressed.bind(decorator))
 	node.add_decorator(_name)
-	node.find_node("Decorators").add_child(decorator)
+	node.find_child("Decorators").add_child(decorator)
 
 # 添加装饰按钮按下
 func _on_add_decoretor_button_pressed(b:Button):
@@ -293,7 +295,7 @@ func _on_add_decoretor_button_pressed(b:Button):
 # 删除装饰按钮按下
 func _on_delete_decorator_button_pressed(decorater:Control):
 	var node = decorater.get_parent().get_parent().get_parent()
-	node.find_node("Decorators").remove_child(decorater)
+	node.find_child("Decorators").remove_child(decorater)
 	node.remove_decorator(decorater.get_node("Name").text)
 	decorater.queue_free()
 

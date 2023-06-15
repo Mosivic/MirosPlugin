@@ -32,9 +32,9 @@ func start(_plugin:EditorPlugin):
 		get_node("Tabs/Center/VBoxContainer").add_child(module_item)
 		
 		if setting.is_open:
-			module_item.get_node("Switch").pressed = true #注意, 该代码会调动Swith的绑定事件"on_ModuleSwitch_toggled"
+			module_item.get_node("Switch").emit_signal("pressed")  #注意, 该代码会调动Swith的绑定事件"on_ModuleSwitch_toggled"
 	
-	tip_bubble = tip_bubble_tscn.instance()
+	tip_bubble = tip_bubble_tscn.instantiate()
 	plugin.get_editor_interface().add_child(tip_bubble)
 
 	
@@ -50,7 +50,7 @@ func over():
 	queue_free()
 
 func create_module(setting:ModuleSettingResource):
-	if get_node("Modules").find_node(setting.name) != null:return
+	if get_node("Modules").find_child(setting.name) != null:return
 	var core = load(setting.core).new()
 	core.init(plugin,setting)
 	core.name = setting.name
@@ -60,7 +60,7 @@ func create_module(setting:ModuleSettingResource):
 
 func destory_module(setting:ModuleSettingResource):
 	setting.is_open =false
-	var core = get_node("Modules").find_node(setting.name)
+	var core = get_node("Modules").find_child(setting.name)
 	if core:
 		core.over()
 		core.save()
@@ -86,7 +86,7 @@ func on_ModuleSetting_button_down(setting:ModuleSettingResource):
 	else:
 		tabs_index = tabs_index + 1
 		tabs_map[setting_panel_name] = tabs_index
-		var setting_panel = load(setting.setting_panel).instance()
+		var setting_panel = load(setting.setting_panel).instantiate()
 		tabs.add_child(setting_panel)
 		setting_panel.init(self,setting)
 	tabs.set_current_tab(tabs_map[setting_panel_name]) 

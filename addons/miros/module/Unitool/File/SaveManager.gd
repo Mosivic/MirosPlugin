@@ -4,18 +4,15 @@ class_name SavaManager
 ## 文件是否存在
 ## @path 文件路径
 static func exists_file(path: String) -> bool:
-	var file = File.new()
-	var exists = file.file_exists(path)
-	file.close()
-	return exists
+	return FileAccess.file_exists(path)
+
 
 
 ## 保存数据
 ## @path 文件路径
 ## @data 数据
 static func SaveData(path: String, data) -> void:
-	var file = File.new()
-	file.open(path, File.WRITE)
+	var file = FileAccess.open(path,FileAccess.WRITE)
 	file.store_var(data)	# 写入数据
 	file.close()
 
@@ -24,8 +21,7 @@ static func SaveData(path: String, data) -> void:
 ## @path 文件路径
 ## @return 返回数据
 static func LoadData(path: String):
-	var file = File.new()
-	file.open(path, File.READ)
+	var file = FileAccess.open(path,FileAccess.READ)
 	var data = file.get_var()	# 读取数据
 	file.close()
 	return data 
@@ -36,18 +32,17 @@ static func LoadData(path: String):
 ## @folder_path 保存的文件夹路径
 ## @data 字典数据
 static func SaveDictAsJson(path:String,data:Dictionary):
-	var file = File.new()
-	file.open(path, File.WRITE)
-	file.store_line(to_json(data))
+	var file = FileAccess.open(path,FileAccess.WRITE)
+	var json = JSON.new()
+	file.store_line(JSON.parse_string(json.stringify(data)))
 	file.close()
 
 # 读取Json文件,并返回为字典
 static func LoadJsonAsDict(path:String):
-	var file = File.new()
-	if not file.file_exists(path):
+	if not FileAccess.file_exists(path):
 		print("Miros:SaveManager:LoadJsonAsDict:文件不存在")
-	file.open(path, File.READ)
-	var data = JSON.parse(file.get_as_text()).result
+	var file = FileAccess.open(path,FileAccess.READ)
+	var data = JSON.parse_string(file.get_as_text()).result
 	file.close()
 	return data
 
@@ -57,8 +52,7 @@ static func LoadJsonAsDict(path:String):
 ## @key 以数据中的哪个值作为 key 值记录到字典中
 ## @return 以第一行数据作为 key 值，记录成字典形式
 static func ParseCsvFile(path: String, key: String) -> Dictionary:
-	var file = File.new()
-	file.open(path, File.READ)
+	var file = FileAccess.open(path,FileAccess.READ)
 
 	# 没有数据则返回空字典
 	# 以 ; 分号进行分隔，具体需要自己打开 csv 文件查看是那种字符进行分隔的
@@ -105,8 +99,8 @@ static func ParseCsvFile(path: String, key: String) -> Dictionary:
 
 # 获取指定目录下的所有文件路径
 static func GetFilesInDirectory(files:Dictionary,path:String,retain_postfix:bool=true,assign_postfix:String="")->Dictionary:
-	var dir = Directory.new()
-	if dir.open(path) == OK:
+	var dir = DirAccess.open(path)
+	if dir.dir_exists(path):
 		dir.list_dir_begin()
 		var file_name = dir.get_next()
 		while file_name != "":

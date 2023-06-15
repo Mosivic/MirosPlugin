@@ -17,11 +17,12 @@ static func _task(e:BTEngine,is_physics:bool,delta:float)->int:
 	var action = node_data["action"]
 	var action_state = action_execute(action,is_physics,delta)
 	var a:Array = [action_state]
-	return wrap(e,a)
+	var r = _wrap(e,a)
+	return r
 
 
 # 任务完成后处理
-static func wrap(e:BTEngine,states:Array)->int:
+static func _wrap(e:BTEngine,states:Array)->int:
 	var result:int
 	var node_data = e.current_node_data
 	var decorators = node_data["decorators"]

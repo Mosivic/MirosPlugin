@@ -38,11 +38,11 @@ func generate_tags_list():
 	for item in tags_list.get_children():
 		item.queue_free()
 	for key in tag_resource.tags:
-		var tag_item = tag_item_tscn.instance()
+		var tag_item = tag_item_tscn.instantiate()
 		tag_item.name = key
 		tag_item.get_node("TagBtn").text = key
-		tag_item.get_node("DelBtn").connect("button_down",self,"on_DelBtn_button_down",[tag_item])
-		tag_item.get_node("TagBtn").connect("button_down",self,"on_TagBtn_button_down",[tag_item])
+		tag_item.get_node("DelBtn").button_down.connect("button_down",self,"on_DelBtn_button_down",[tag_item])
+		tag_item.get_node("TagBtn").button_down.connect("button_down",self,"on_TagBtn_button_down",[tag_item])
 		tags_list.add_child(tag_item)
 
 

@@ -17,7 +17,7 @@ static func _task(e:BTEngine,is_physics:bool,delta:float)->int:
 		actions.append(actions)
 	states = sequence_actions_execute(actions,is_physics,delta)
 	
-	return wrap(node_data,states)
+	return _wrap(node_data,states)
 
 
 

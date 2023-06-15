@@ -56,7 +56,7 @@ func generate_slots(_backpack:Node):
 	
 	var total_count = slot_raws * slot_columns
 	for i in total_count:
-		var slot = custom_slot.instance()
+		var slot = custom_slot.instantiate()
 		slot.rect_size = slot_size
 		container.add_child(slot)
 		slot.set_owner(get_tree().get_edited_scene_root())

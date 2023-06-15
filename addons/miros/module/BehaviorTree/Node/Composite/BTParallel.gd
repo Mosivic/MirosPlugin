@@ -18,5 +18,5 @@ static func _task(e:BTEngine,is_physics:bool,delta)->int:
 		actions.append(actions)
 	states = parallel_actions_execute(actions,is_physics,delta)
 	
-	return wrap(node_data,states)
+	return _wrap(node_data,states)
 

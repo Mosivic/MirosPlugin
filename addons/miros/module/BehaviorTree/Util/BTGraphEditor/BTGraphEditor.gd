@@ -1,12 +1,12 @@
 @tool
 extends Control
 
-
 @onready var file_dialog:FileDialog = get_node("./UI/FileDialog")
 # 行为树Graph
 @onready var graph = $GraphEdit
 # UI
 @onready var ui = $UI
+
 # 动作数据库
 const ActionBD = preload("res://addons/miros/module/Action/ActionBD.gd")
 # 行为树类数据库
@@ -51,7 +51,7 @@ func _pack_node_info(node)->Dictionary:
 		"children_node":node.children_node,
 		"left_nodes_name":node.left_nodes_name,
 		"right_nodes_name":node.right_nodes_name,
-		"offset":node.offset,
+		"position":node.position,
 		"action_name":node.action_name,
 		"action_args":node.action_args,
 		"decorators":node.decorators
@@ -59,7 +59,7 @@ func _pack_node_info(node)->Dictionary:
 	return data
 
 # Build Node from node_info / 解包结点并赋值数据到结点实例 - 用于还原结点
-func _unpack_node_info(node,info:Dictionary):
+func _unpack_node_info(node:GraphNode,info:Dictionary):
 	if !info.has("node_class"):
 		info.node_class = "Root"
 	if !info.has("name"):
@@ -74,8 +74,8 @@ func _unpack_node_info(node,info:Dictionary):
 		info.left_nodes_name = []
 	if !info.has("right_nodes_name"):
 		info.right_nodes_name = []
-	if !info.has("offset"):
-		info.offset = Vector2.ZERO
+	if !info.has("position"):
+		info.position = Vector2.ZERO
 	if !info.has("action_name"):
 		info.action_name = "ActionEmpty"
 	if !info.has("action_args"):
@@ -89,7 +89,7 @@ func _unpack_node_info(node,info:Dictionary):
 	node.children_node = info.children_node
 	node.left_nodes_name = info.left_nodes_name
 	node.right_nodes_name = info.right_nodes_name
-	node.offset = info.offset
+	node.position = info.position
 	node.action_name = info.action_name
 	node.action_args = info.action_args
 	node.decorators = info.decorators
@@ -135,7 +135,7 @@ func _save_data_check()->bool:
 
 #------------------------------------------------------------------------------#
 #------------------------------------------------------------------------------#
-# Operate Graph instance node / 操作图中结点
+# Operate Graph instantiate node / 操作图中结点
 
 # 创建新结点
 # 创建结点实例， 赋值graph_core， title
@@ -143,7 +143,7 @@ func _save_data_check()->bool:
 # 结点装配器加工结点
 # 结点UI生成
 func _create_node(info:Dictionary)->Node:
-	var node = bt_gragh_node.instance()
+	var node = bt_gragh_node.instantiate()
 	_unpack_node_info(node,info)
 	node.graph_core = self
 	node.title = node.name
@@ -154,7 +154,7 @@ func _create_node(info:Dictionary)->Node:
 	ui._build_action_args_from_data(node)
 	
 	# node UI事件绑定
-	node.find_node("AddBtn").connect("button_down",ui,"_on_action_arg_add_button_down",[node])
+	node.find_child("AddBtn").button_down.connect(Callable(ui,"_on_action_arg_add_button_down").bind(node))
 	
 	graph.add_child(node)
 	ui._build_tree()
@@ -168,12 +168,13 @@ func _delete_node(node:Node):
 		node.queue_free()
 
 # 设置该结点的父节点与之的子关系
-func _set_parent_to_child(node):
+func _set_parent_to_child(node:BTGraphNode):
 	if node.parent_node == parent_node:
 		if !children_node.has(node.name):
 			children_node.append(node.name)
 	else:
 		var parent = _get_node_by_name(node.parent_node)
+		if parent == null:return
 		if !parent.has_child_node(node.name):
 			parent.add_child_node(node.name)
 
@@ -320,7 +321,7 @@ func _select_node(node):
 func _on_GraphEdit_node_selected(node):
 	_select_node(node)
 
-func _on_GraphEdit_node_unselected(node):
+func _on_GraphEdit_node_deselected(node):
 	_select_node(null)
 
 #------------------------------------------------------------------------------#
@@ -344,9 +345,10 @@ func _get_node_by_name(_name:String)->GraphNode:
 	var node = graph.get_node(_name)
 	if node == null:
 		print("BTGraphCore:Can not get node with name: "+_name)
-		return node
+		return null
 	else:
 		return node
+		
 # 解除连接后清楚双方节点的节点信息
 func _remove_node_link_info(from:String,to:String):
 	var left = _get_node_by_name(from)

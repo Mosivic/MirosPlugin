@@ -114,7 +114,7 @@ func edit():
 
 # 创建tile
 func create_tile(pos:Vector3):
-	var tile = tile_tscn.instance()
+	var tile = tile_tscn.instantiate()
 	get_node(tilemap_node_path).add_child(tile)
 	tile.set_owner(get_tree().get_edited_scene_root())
 	tile.pos_unit = pos
@@ -143,7 +143,7 @@ func load_tilemap_res():
 	var tilemap_build = tilemap_res.data
 	if tilemap_build.size() == 0:return
 	for key in tilemap_build:
-		var tile = tile_tscn.instance()
+		var tile = tile_tscn.instantiate()
 		get_node(tilemap_node_path).add_child(tile)
 		tile.set_owner(get_tree().get_edited_scene_root())
 		tile.position = tilemap_build[key][0]

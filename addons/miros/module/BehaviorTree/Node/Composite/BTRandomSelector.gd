@@ -24,4 +24,4 @@ static func _task(e:BTEngine,is_physics:bool,delta)->int:
 		var selected_node_data = action.action_temp["seleted_node_data"]
 		var selected_node_action = selected_node_data["action"]
 		action_state = action_execute(action,is_physics,delta)
-	return wrap(e,[action_state])
+	return _wrap(e,[action_state])

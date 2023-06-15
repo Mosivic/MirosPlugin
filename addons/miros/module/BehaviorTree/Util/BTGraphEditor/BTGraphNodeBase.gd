@@ -1,5 +1,6 @@
 @tool
 extends GraphNode
+class_name BTGraphNode
 
 # 保存连接该节点的左右节点引用
 var left_nodes:Array
@@ -54,7 +55,7 @@ func remove_node(node):
 
 func set_action_name(v):
 	action_name = v
-	get_node("VBoxContainer/Action/Content").text = action_name
+	get_node("VBoxContainer/Action/Name/Content").text = action_name
 
 
 # 根据保存的left_nodes和right_nodes构建连接

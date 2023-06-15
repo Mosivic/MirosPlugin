@@ -26,7 +26,7 @@ func parse_begin(object):
 	
 func generate_inspector(object):
 
-	var inspector = inspector_tscn.instance()
+	var inspector = inspector_tscn.instantiate()
 	inspector.init(miros,tags,object)
 	add_custom_control(inspector)
 
