@@ -6,7 +6,7 @@
 script = ExtResource("1")
 name = "SuperTag"
 core = "res://addons/miros/module/SuperTag/TagCore.gd"
-is_open = false
+is_open = true
 inspector_plugin = "res://addons/miros/module/SuperTag/TagInspectorPlugin.gd"
 setting_panel = "res://addons/miros/module/SuperTag/UI/TagSettingInterface.tscn"
 version = "0.02"

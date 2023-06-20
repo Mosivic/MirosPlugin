@@ -5,10 +5,10 @@ var setting:ModuleSettingResource
 var tags:Dictionary
 
 var inspector_tscn = preload("res://addons/miros/module/SuperTag/UI/TagInspectorUI.tscn")
-
-func init(_miros,_setting:ModuleSettingResource):
-	miros = _miros
-	setting = _setting
+#
+#func init(_miros:Node,_setting:ModuleSettingResource):
+#	miros = _miros.get_script()
+#	setting = _setting
 
 func can_handle(object):
 	return true

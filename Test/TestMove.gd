@@ -10,6 +10,8 @@ func _ready():
 	var engine_class:GDScript = load("res://addons/miros/module/BehaviorTree/Util/BTEngine.gd")
 	var engine = engine_class.new(test_res.data,action_refs)
 	engine.set_active(true)
+	
+	print(self)
 
 #	add_hp()
 #	add_hp_zero_trigger()

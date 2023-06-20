@@ -24,6 +24,10 @@ run/main_scene="res://Test/test.tscn"
 config/features=PackedStringArray("4.0")
 config/icon="res://icon.png"
 
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/miros/plugin.cfg")
+
 [input]
 
 left={

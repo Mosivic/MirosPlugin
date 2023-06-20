@@ -1,9 +1,12 @@
-res://addons/miros/module/BehaviorTree/BTGraphSettingResource.tres
-res://addons/miros/module/BehaviorTree/Util/BTGraphEditor/BTGraphEditor.tscn
+res://Test/test.tscn
 res://addons/miros/resource/Theme/theme.tres
+res://addons/miros/module/DataDrive/Demo/Template/DataInventory.gd
 res://Test/TestMove.gd
 res://asd.res
 res://addons/miros/module/SuperTag/Test/test.tres
-res://addons/miros/module/BehaviorTree/Util/BTGraphEditor/BTGraphEditor.gd
+res://addons/miros/core/Miros.tscn
+res://addons/miros/module/BehaviorTree/Util/BTGraphEditor/BTGraphEditor.tscn
+res://addons/miros/core/ModuleItem.tscn
 res://addons/miros/module/BehaviorTree/Util/BTGraphEditor/BTGraphNode.tscn
-res://addons/miros/module/BehaviorTree/Util/BTGraphEditor/BTGraphNodeBase.gd
+res://Test/test1.tscn
+res://Test/Sprite.gd

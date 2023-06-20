@@ -1,0 +1,67 @@
+[gd_scene load_steps=10 format=3 uid="uid://dp77golsgib68"]
+
+[ext_resource type="Script" path="res://Test/TestMove.gd" id="1_0l1uv"]
+[ext_resource type="Resource" uid="uid://b7hm2g2l36042" path="res://asd.res" id="2_2iooh"]
+[ext_resource type="PackedScene" uid="uid://bqjw4m1fxybwh" path="res://addons/miros/module/OneModel/OneData.tscn" id="4_f86ms"]
+[ext_resource type="Script" path="res://addons/miros/module/SuperTag/TagEngine.gd" id="5_lmj64"]
+[ext_resource type="Resource" uid="uid://bijhwfn64d1b8" path="res://addons/miros/module/SuperTag/Test/test.tres" id="6_xvpby"]
+
+[sub_resource type="RectangleShape2D" id="1"]
+size = Vector2(78, 78)
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_60vy3"]
+load_path = "res://.godot/imported/icon.png-f71f68b94dca5d68dd9bf4097841f3a2.ctex"
+
+[sub_resource type="GDScript" id="GDScript_4i0et"]
+script/source = "extends Sprite2D
+
+
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	print(str(self) + \"name\")
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta):
+	pass
+"
+
+[sub_resource type="GDScript" id="GDScript_3u006"]
+script/source = "extends Sprite2D
+
+
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	print(str(self) + \"name\")
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta):
+	pass
+"
+
+[node name="Node2D" type="Node2D"]
+
+[node name="Node" type="Node" parent="."]
+script = ExtResource("5_lmj64")
+tag_reource = ExtResource("6_xvpby")
+
+[node name="KinematicBody2D" type="CharacterBody2D" parent="Node" groups=["Tags"]]
+position = Vector2(299, 292)
+script = ExtResource("1_0l1uv")
+test_res = ExtResource("2_2iooh")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Node/KinematicBody2D" groups=["Tags"]]
+shape = SubResource("1")
+
+[node name="OneData" parent="Node/KinematicBody2D" groups=["Tags"] instance=ExtResource("4_f86ms")]
+
+[node name="Sprite2" type="Sprite2D" parent="Node" groups=["Tags"]]
+position = Vector2(598, 584)
+texture = SubResource("CompressedTexture2D_60vy3")
+script = SubResource("GDScript_4i0et")
+
+[node name="1231" type="Sprite2D" parent="Node" groups=["Tags"]]
+position = Vector2(299, 292)
+texture = SubResource("CompressedTexture2D_60vy3")
+script = SubResource("GDScript_3u006")

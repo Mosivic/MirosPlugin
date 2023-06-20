@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="DataRole" load_steps=6 format=3 uid="uid://cq1lrhbxgvlcv"]
+
+[ext_resource type="Script" path="res://addons/miros/module/DataDrive/Demo/Template/DataBehavior.gd" id="1_cmesi"]
+[ext_resource type="Script" path="res://addons/miros/module/DataDrive/Demo/Template/DataInventory.gd" id="2_qohmf"]
+[ext_resource type="Script" path="res://addons/miros/module/DataDrive/Demo/Template/DataRole.gd" id="3_g1bce"]
+
+[sub_resource type="Resource" id="Resource_lyhem"]
+script = ExtResource("1_cmesi")
+behavior = {}
+data_type = ""
+
+[sub_resource type="Resource" id="Resource_kvbhp"]
+script = ExtResource("2_qohmf")
+inventory = {}
+data_type = ""
+
+[resource]
+script = ExtResource("3_g1bce")
+hp = 10.0
+atk = 2.0
+inventory = SubResource("Resource_kvbhp")
+behavior = SubResource("Resource_lyhem")
+data_type = ""
