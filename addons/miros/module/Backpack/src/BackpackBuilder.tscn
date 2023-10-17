@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://byxb8obs8kwyh"]
+
+[ext_resource type="Script" path="res://addons/miros/module/Backpack/src/BackpackBuilder.gd" id="1"]
+
+[node name="BackpackBuilder" type="Node"]
+script = ExtResource("1")

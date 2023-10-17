@@ -1,9 +1,9 @@
-[gd_resource type="Resource" load_steps=2 format=2]
+[gd_resource type="Resource" load_steps=2 format=3 uid="uid://8xpvjk0ao877"]
 
-[ext_resource path="res://addons/miros/module/Backpack/BackpackResource.gd" type="Script" id=1]
+[ext_resource type="Script" path="res://addons/miros/module/Backpack/src/BackpackResource.gd" id="1"]
 
 [resource]
-script = ExtResource( 1 )
+script = ExtResource("1")
 data = {
 "icon": {
 "count": 2,

@@ -2,7 +2,7 @@
 extends EditorPlugin
 
 var Miros = preload("res://addons/miros/core/Miros.tscn")
-var MiroIcon = preload("res://addons/miros/resource/Image/icon.svg")
+var MiroIcon = preload("res://addons/miros/resource/Image/delete.svg")
 
 var _miros:Control = null
 
@@ -26,8 +26,8 @@ func  _has_main_screen():
 func _get_plugin_name():
 	return "Miros"
 
-func _get_plugin_icon():
-	return MiroIcon
+#func _get_plugin_icon():
+#	return MiroIcon
 
 func _make_visible(visible):
 	if _miros:

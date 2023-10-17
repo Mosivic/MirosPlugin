@@ -98,8 +98,8 @@ func _init_slots():
 	
 # 配置slot事件
 func _config_slot_event(_slot):
-	_slot.connect("mouse_entered",self,"_on_slot_mouse_entered",[_slot])
-	_slot.connect("mouse_exited",self,"_on_slot_mouse_exited",[_slot])
+	_slot.mouse_entered.connect(_on_slot_mouse_entered.bind(_slot))
+	_slot.mouse_exited.connect(_on_slot_mouse_exited.bind(_slot))
 
 # slot事件 - 鼠标进入slot
 func _on_slot_mouse_entered(_slot):

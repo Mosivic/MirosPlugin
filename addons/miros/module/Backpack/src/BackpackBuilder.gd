@@ -1,7 +1,7 @@
 # Backpack Builder
 # 背包生成器
 # 指定custom_slot路径
-# 指定Backpack宿主，需要为PannelContainer类型，且没有子结点
+# 指定Backpack宿主（BackpackBase脚本），需要为PannelContainer类型，且没有子结点
 # 将BackpackBase.gd脚本或其子类挂载在Backpack宿主上
 # 指定Backpack.gd的资源res
 # 设置好在Inspecter中本生成器的参数，点击生成
@@ -10,7 +10,9 @@
 extends Node
 
 # 自定义Slot需要为Control基类型
-@export var custom_slot:PackedScene:set=set_custom_slot
+@export var custom_slot:PackedScene:
+	set(v):
+		custom_slot = v
 
 @export var slot_columns:int = 8
 @export var slot_raws:int = 8
@@ -18,8 +20,13 @@ extends Node
 
 @export var backpack_path:NodePath 
 
-@export var generate:bool:set=set_generate
-@export var clear:bool:set=set_clear
+@export var generate:bool:
+	set(v):
+		set_generate(v)
+		
+@export var clear:bool:
+	set(v):
+		set_clear(v)
 
 
 
@@ -31,6 +38,8 @@ func set_generate(v):
 		return
 	generate_backpack(backpack)
 	generate_slots(backpack)
+	
+	print("Backpack: Generate.")
 
 func set_clear(v):
 	var backpack = get_node(backpack_path)
@@ -56,7 +65,7 @@ func generate_slots(_backpack:Node):
 	
 	var total_count = slot_raws * slot_columns
 	for i in total_count:
-		var slot = custom_slot.instantiate()
-		slot.rect_size = slot_size
+		var slot:PanelContainer = custom_slot.instantiate()
+		slot.size = slot_size
 		container.add_child(slot)
 		slot.set_owner(get_tree().get_edited_scene_root())
