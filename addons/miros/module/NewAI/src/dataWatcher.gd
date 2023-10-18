@@ -2,9 +2,11 @@
 # version_0.1_2023.10.17
 # 
 extends Node
+class_name GPCDataSensor
 
-@export var custom_property:Dictionary
+@export var data:Dictionary
 @export var data_res:Resource
+
 
 const COMPARE_MODE={
 	NULL = 0,
@@ -19,20 +21,15 @@ const CACULATE_MODE = {
 	SQUARE = 2,
 }
 
-var data:Dictionary
-var actor:Node
 
 # 属性触发器，当属性的一定条件满足时触发
 var property_trigger:Dictionary
-# 属性监视器，
+# 属性监视器
 var property_watcher:Dictionary
 #buff，持续性的的属性变化
 var buff:Dictionary
 
 var timer:float = 0
-
-func _ready():
-	register_custom_property()
 
 
 func _process(delta):
@@ -44,25 +41,23 @@ func set_custom_property(_name:String,_value:float):
 	if data.has(_name):
 		data[_name] = _value
 	else:
-		print("OneData:set_custom_property:Had not find property: "+_name+ " wih actor: "+ actor.name)
+		print("OneData:set_custom_property:Had not find property: "+_name)
 
 func get_custom_property(_name:String):
 	if data.has(_name):
 		return data[_name]
 	else:
-		print("OneData:get_custom_property:Had not find property: "+_name+ " wih actor: "+ actor.name)
+		print("OneData:get_custom_property:Had not find property: "+_name)
 		return null
 
-func register_custom_property():
-	for key in custom_property.keys():
-		data[key] = custom_property[key]
 
 func save_data():
 	if data_res != null:
 		data_res.data = data
 		ResourceSaver.save(data_res,data_res.resource_path)
 	else:
-		print("OneData:save_data() data_res is null with actor: "+ actor.name+ "")
+		print("OneData:save_data() data_res is null ")
+
 
 func add_property_trigger(_trigger_name:String,_property_name:String,_valve:float,_compare_mode:int,_recall:Callable):
 	property_trigger[_trigger_name] = {
@@ -71,6 +66,7 @@ func add_property_trigger(_trigger_name:String,_property_name:String,_valve:floa
 		"compare_mode":_compare_mode,
 		"recall":_recall
 	}
+
 
 func remove_property_trigger(_trigger_name):
 	if property_trigger.has(_trigger_name):
@@ -98,8 +94,7 @@ func check_trigger():
 				if property <  valve:
 					recall.call()
 	return
-				
-		
+
 
 func caculate_property(_property_name:String,_value:float,_caculate_mode:int=1):
 	var property =  data[_property_name]
@@ -128,7 +123,8 @@ func add_buff(_buff_name:String,_property_name:String,_value:float,_interval:flo
 			"time":timer,
 			"caculate_mode":_caculate_mode
 		}
-	
+
+
 func remove_buff(_buff_name:String):
 	if buff.has(_buff_name):
 		buff.erase(_buff_name)
