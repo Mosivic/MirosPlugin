@@ -1,0 +1,15 @@
+[remap]
+
+importer="spine.atlas"
+type="SpineAtlasResource"
+uid="uid://b2pi5fobbc5s2"
+path="res://.godot/imported/hero.atlas-d6c3a2d7b9c7381e57f521887142e1ae.spatlas"
+
+[deps]
+
+source_file="res://addons/miros/module/GpcAI/test/ActionMachineTest/Asset/hero.atlas"
+dest_files=["res://.godot/imported/hero.atlas-d6c3a2d7b9c7381e57f521887142e1ae.spatlas"]
+
+[params]
+
+normal_map_prefix="n"

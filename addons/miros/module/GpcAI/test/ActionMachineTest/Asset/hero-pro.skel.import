@@ -1,0 +1,14 @@
+[remap]
+
+importer="spine.skel"
+type="SpineSkeletonFileResource"
+uid="uid://btcpsmfjwft8j"
+path="res://.godot/imported/hero-pro.skel-c0b0d7811a84a8aaf2c04b3ca4f25d36.spskel"
+
+[deps]
+
+source_file="res://addons/miros/module/GpcAI/test/ActionMachineTest/Asset/hero-pro.skel"
+dest_files=["res://.godot/imported/hero-pro.skel-c0b0d7811a84a8aaf2c04b3ca4f25d36.spskel"]
+
+[params]
+
