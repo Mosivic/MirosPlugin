@@ -8,18 +8,25 @@ var _current_goal
 var _current_plan
 var _current_plan_step = 0
 
+var _current_action
+var _last_action
+
+var _actions_setting:GPCActionsSetting
+var _goals_setting:GPCGoalsSetting
+
 @export var property_sensor:GPCPropertySensor
 @export var actor:Node
+
 
 var is_active := false
 
 func _ready() -> void:
 	if property_sensor == null:
-		print("property sensor is null")
+		print_debug("property sensor is null")
 		return
 		
 	if actor == null:
-		print("actor is null")
+		print_debug("actor is null")
 		return
 	
 	await actor.ready  #wait actor'children ready
@@ -27,30 +34,99 @@ func _ready() -> void:
 	# init property sensor
 	property_sensor.actor = actor
 	
-	# init actions and goals
+	# init actions
 	for node in get_node('Actions').get_children():
 		if node is GPCAction:
 			_actions.append(node)
+
+			var setting = _actions_setting.get_setting()
 			
+			if setting.has(node.name):
+				for key in setting[node.name].keys():
+					node.set(key,setting[node.name][key])
+					
 			node.set_property_sensor(property_sensor)
 			node.init()
+			
+	# init  goals
 	for node in get_node('Goals').get_children():
 		if node is GPCGoal:
 			_goals.append(node)
-
+			
+			var setting = _goals_setting.get_setting()
+			
+			if setting.has(node.name):
+				for key in setting[node.name].keys():
+					node.set(key,setting[node.name][key])
+					
+			node.set_property_sensor(property_sensor)
+			node.init()
+			
 	# start loop
 	is_active = true
 
 
 func _process(delta):
+	if not is_active:return
+	
 	var goal = _get_best_goal()
 	
 	if _current_goal == null or goal != _current_goal:
 		_current_goal = goal
 		_current_plan = _caculate_best_plan(_current_goal)
-		_current_plan_step = 0
+		
+	
+		if _current_plan.size() == 0:
+			return
+		else:
+			_current_plan_step = 0
+			_last_action = null
+			_current_action  = _current_plan['actions'][_current_plan_step]
 	else:
 		_follow_plan(delta)
+
+
+func _physics_process(delta: float) -> void:
+	if _current_action != null:
+		var state = _current_action.perform_physics(delta)
+		_current_action.set_single_midle_state(state,true)
+
+
+# 按流程执行plan中的action
+func _follow_plan(delta):
+	if _last_action == null:
+		_current_action.enter()
+		print(actor.name + " enter action :" + _current_action.name )
+	elif _last_action != _current_action:
+		_last_action.exit()
+		_current_action.enter()
+		print(actor.name + " enter action :" + _current_action.name )
+
+	var state = _current_action.perform(delta)
+	_current_action.set_single_midle_state(state,false)
+	
+	var result = _current_action.get_state()
+	_last_action = _current_action
+	
+	if result == STATE.ACTION_STATE.SUCCEED :
+		_current_action.succeed()
+		
+		var succeed_effects:Dictionary = _current_action.get_succeed_effects()
+		for ckey in succeed_effects.keys():
+				property_sensor.set(ckey,succeed_effects[ckey])
+				
+		if _current_plan_step < _current_plan["actions"].size() -1:
+			_current_plan_step += 1
+			_current_action = _current_plan['actions'][_current_plan_step]
+		else:
+			print(actor.name + " goal succeed:" + _current_goal.name )
+			_current_goal = null
+	elif result == STATE.ACTION_STATE.FAILED:
+		_current_action.failed()
+		
+		var failed_effects:Dictionary = _current_action.get_failed_effects()
+		for ckey in failed_effects.keys():
+				property_sensor.set(ckey,failed_effects[ckey])
 
 
 # 获取当前最优目标goal
@@ -62,16 +138,6 @@ func _get_best_goal():
 			highest_priority_goal = goal
 	
 	return highest_priority_goal
-
-
-# 按流程执行plan中的action
-func _follow_plan(delta):
-	if _current_plan.size() == 0:
-		return
-	
-	var is_step_complete = _current_plan["actions"][_current_plan_step].perform(delta)
-	if is_step_complete and _current_plan_step < _current_plan["actions"].size() -1 :
-		_current_plan_step += 1
 
 
 # 计算达到目标的最优计划
@@ -107,7 +173,7 @@ func _build_plans(node):
 			continue
 		
 		var should_use_action = false
-		var effects = action.get_effects()
+		var effects = action.get_succeed_effects()
 		var desired_state = state.duplicate()
 		
 		for s in desired_state:
@@ -130,7 +196,7 @@ func _build_plans(node):
 				node.children.push_back(parent_node)
 				has_followup = true
 		
-		return has_followup
+	return has_followup
 
 
 # 将计划树结构转变为计划数组
@@ -142,6 +208,7 @@ func _transform_tree_into_array(p):
 			actions = [p.action],
 			cost = p.action.get_cost(),
 		})
+		
 		return plans
 		
 	for c in p.children:

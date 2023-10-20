@@ -91,7 +91,7 @@ func _is_action_could_perform(action:GPCAction)->bool:
 	var could_perform = true
 
 	for c_key in conditions.keys():
-		if c_key is String: #
+		if c_key is String: 
 			if property_sensor.get(c_key) is bool:
 				if property_sensor.get(c_key) != conditions[c_key]:
 					could_perform = false

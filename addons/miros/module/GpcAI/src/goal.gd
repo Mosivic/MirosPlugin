@@ -2,21 +2,25 @@ extends Node
 class_name GPCGoal
 
 var _priority := 1
-var _desire_state := {}
-var _is_valid:Callable
+var _desire_property := {}
+var _is_valid:Callable = func():return true
 
-func _init(priorty:int,desired_state:Dictionary,is_valid:Callable=func():return true):
-	_priority = priorty
-	_desire_state = desired_state
-	_is_valid = is_valid
+var _property_sensor:GPCPropertySensor
+
+func init():
+	pass
 	
 func is_valid() -> bool:
 	return _is_valid.call()
 
+
+func set_property_sensor(p):
+	_property_sensor = p
 
 func get_priority() -> int:
 	return _priority
 
 
 func get_desired_state() -> Dictionary:
-	return _desire_state
+	return _desire_property 
+
