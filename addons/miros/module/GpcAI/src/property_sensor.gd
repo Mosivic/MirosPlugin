@@ -4,10 +4,37 @@
 extends Node
 class_name GPCPropertySensor
 
-var actor = null
-
 @export var data:Dictionary
 @export var data_res:Resource
+
+
+
+func all_conditions_satisfy(conditions:Dictionary):
+	var result = true
+	for key in conditions.keys():
+		if get(key) != conditions[key]:
+			result = false
+	return result
+
+
+func any_conditions_satisfy(conditions:Dictionary):
+	for key in conditions.keys():
+		if get(key) == conditions[key]:
+			return true
+	return false
+
+
+func apply_effects(effects:Dictionary):
+	for key in effects.keys():
+		set_property(key,effects[key])
+
+
+func set_actor(actor):
+	_actor = actor
+
+
+func get_actor():
+	return _actor
 
 
 const COMPARE_MODE={
@@ -23,6 +50,7 @@ const CACULATE_MODE = {
 	SQUARE = 2,
 }
 
+var _actor = null
 
 # 属性触发器，当属性的一定条件满足时触发
 var property_trigger:Dictionary
@@ -32,18 +60,33 @@ var property_watcher:Dictionary
 var buff:Dictionary
 
 var timer:float = 0
-
+	
 
 func _process(delta):
 	timer += delta
 	check_trigger()
 	check_buff(delta)
-	
+
+
+
+func set_property(property_name:String,value,is_force_change: bool = false):
+	var previous = get(property_name)
+	if previous != value or is_force_change:
+		_property_changed(property_name,previous,value)
+		set(property_name,value)
+
+
+# virtual
+func _property_changed(property_name, previous, current):
+	pass
+
+
 func set_custom_property(_name:String,_value:float):
 	if data.has(_name):
 		data[_name] = _value
 	else:
 		print("OneData:set_custom_property:Had not find property: "+_name)
+
 
 func get_custom_property(_name:String):
 	if data.has(_name):

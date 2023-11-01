@@ -1,5 +1,5 @@
 extends Node
-class_name GPC
+class_name GPCA
 
 
 var _actors_ai := {}

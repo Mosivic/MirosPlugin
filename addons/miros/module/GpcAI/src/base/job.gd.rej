@@ -1,0 +1,7 @@
+diff a/addons/miros/module/GpcAI/src/base/job.gd b/addons/miros/module/GpcAI/src/base/job.gd	(rejected hunks)
+@@ -1,4 +1,5 @@
+ # Job
++<<<<<<< HEAD
+ # job在execute函数执行过程中,自身会更新state值,且当执行成功或失败时会自动应用其effects
+ # 1: execute can_execute 
+ # 2: get_state get_cost get_priorty get_layer()...

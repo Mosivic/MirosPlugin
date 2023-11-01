@@ -15,3 +15,9 @@ const ACTION_STATE = {
 	FAILED = 3
 }
 
+const GOAL_STATE = {
+	NULL = 0,
+	RUNNING = 1,
+	SUCCEED = 2,
+	FAILED = 3
+}
